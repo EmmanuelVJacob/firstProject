@@ -1,0 +1,64 @@
+<!--================login_part Area =================-->
+<section class="login_part section_padding">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 col-md-6">
+        <div class="login_part_text text-center">
+          <div class="login_part_text_iner">
+            <h2>Already a customer?</h2>
+
+            <a href="/login" class="btn_3">Log in to your account</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6">
+        <div class="login_part_form">
+          <div class="login_part_form_iner">
+            <h3>Hello
+              <br />
+              verify otp</h3>
+            <form
+              class="row contact_form"
+              action="sentOTP"
+              method="post"
+              novalidate="novalidate"
+            >
+              <div class="col-md-12 form-group p_star">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="number"
+                  name="phoneNumber"
+                  value=""
+                  placeholder="Phone Number"
+                />
+              </div>
+              <div class="col-md-12 form-group p_star">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="otp"
+                  name="otp"
+                  value=""
+                  placeholder="otp"
+                />
+              </div>
+            
+            
+              <div class="col-md-12 form-group">
+                <div class="creat_account d-flex align-items-center">
+                </div>
+                <button type="submit" value="submit" class="btn_3">
+                 sent otp
+                </button>
+                
+
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--================login_part end =================-->

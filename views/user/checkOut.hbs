@@ -1,0 +1,511 @@
+{{!-- Razorpay --}}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+
+
+{{!-- Modal styles --}}
+<style>
+  body {
+    font-family: 'Varela Round', sans-serif;
+  }
+
+  .modal-confirm {
+    color: #636363;
+    width: 325px;
+    font-size: 14px;
+  }
+
+  .modal-confirm .modal-content {
+    padding: 20px;
+    border-radius: 5px;
+    border: none;
+  }
+
+  .modal-confirm .modal-header {
+    border-bottom: none;
+    position: relative;
+  }
+
+  .modal-confirm h4 {
+    text-align: center;
+    font-size: 26px;
+    margin: 30px 0 -15px;
+  }
+
+  .modal-confirm .form-control,
+  .modal-confirm .btn {
+    min-height: 40px;
+    border-radius: 3px;
+  }
+
+  .modal-confirm .close {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+  }
+
+  .modal-confirm .modal-footer {
+    border: none;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 13px;
+  }
+
+  .modal-confirm .icon-box {
+    color: #fff;
+    position: absolute;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    top: -70px;
+    width: 95px;
+    height: 95px;
+    border-radius: 50%;
+    z-index: 9;
+    background: #82ce34;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .modal-confirm .icon-box i {
+    font-size: 58px;
+    position: relative;
+    top: 3px;
+  }
+
+  .modal-confirm.modal-dialog {
+    margin-top: 80px;
+  }
+
+  .modal-confirm .btn {
+    color: #fff;
+    border-radius: 4px;
+    background: #82ce34;
+    text-decoration: none;
+    transition: all 0.4s;
+    line-height: normal;
+    border: none;
+  }
+
+  .modal-confirm .btn:hover,
+  .modal-confirm .btn:focus {
+    background: #6fb32b;
+    outline: none;
+  }
+
+  .trigger-btn {
+    display: inline-block;
+    margin: 100px auto;
+  }
+</style>
+
+
+
+
+<section class="page-add">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="page-breadcrumb">
+          <h2>Checkout<span>.</span></h2>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <img src="#" alt="">
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Page Add Section End -->
+
+<!-- Cart Total Page Begin -->
+<section class="cart-total-page spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <h3>Your Information</h3>
+        <span id="invalidCoupon" class="text-danger" style="display: flex; justify-content: end;"></span>
+        <br>
+        <div style="display: flex; justify-content: end; ">
+          <form>
+            <input type="text" id="couponCode" placeholder="Promo code" style="width: 9.5rem;">
+            <span onclick="submitCoupon()" class="btn btn-secondary">Redeem</span>
+          </form>
+
+        </div>
+
+
+
+        <form id="checkoutForm" class="checkout-form">
+          <div class="row">
+            <div class="col-lg-9">
+              <div class="row">
+                <div class="col-md-8 order-md-1">
+                  <h4 class="mb-5">Billing address</h4>
+                  <div class="row">
+                    <div class="col-md-12 mb-3">
+                      <div class="col-md-12">
+                        {{#each addresses}}
+                        <div class="d-flex mb-3">
+                          <input type="radio" id="{{_id}}" value="{{_id}}" class="activeAddress mr-3" name="address"
+                            data-address="{{_id}}">
+                          <div class="border p-3" style="color: rgb(80, 80, 80);">
+                            <b>{{name}}</b>, <br>
+                            {{address}}, <br>
+                            {{city}}, {{state}}, <br>
+                            pincode: {{postCode}}, Mobile: {{phone}}
+                          </div>
+                          <div class="ml-5 pr-3 d-flex">
+                            <div>
+                              <a class="btn btn-primary pl-3 pr-3 text-light"
+                                style="letter-spacing: 0.1rem;cursor: pointer;" data-toggle="modal"
+                                data-target="#edit{{this._id}}">Edit</a>
+                            </div>
+                            <div class="ml-3 mt-1" style="cursor: pointer;">
+                              <a data-toggle="modal" data-target="#deleteAddr{{this._id}}">
+                                <div class="border border-warning text-center" style="width: fit-content;">
+                                  <span class="ion-ios-close p-3">x</span>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {{/each}}
+                      <div class="custom-control">
+                        <a class="text-primary" data-toggle="modal" data-target=".bd-example-modal-lg"
+                          style="cursor: pointer;">Add a new Address</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="order-table">
+              <div class="cart-item">
+                <span>Total Price</span>
+                <p>{{total}}</p>
+              </div>
+
+              <div class="cart-item">
+                <span>Shipping(Free)</span>
+                <p>Rs 0</p>
+              </div>
+              <div class="cart-item  d-flex justify-content-between bg-light">
+                <div class="text-success">
+                  <h6 class="my-0">Coupon</h6>
+                  <small id="couponName"></small>
+                </div>
+                <span class="text-success" id="couponPrice">Rs.0</span>
+              </div>
+              <div class="cart-total">
+                <span>Amount Payable</span>
+                <p id="strong">{{total}}</p>
+                <input type="text" id="total" name="total" value="{{total}}" hidden>
+              </div>
+            </div>
+
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="payment-method">
+            <h3>Payment</h3>
+            <div class="custom custom-radio">
+              <label for="paypal">Paypal<img class="ml-4 mr-4" src="img/paypal.jpg" alt=""></label>
+              <input type="radio" id="paypal" name="paymentMethod" onclick="validateSubmit()"
+                class="custom-control-label" value="paypal" required>
+            </div>
+
+            <div class="custom custom-radio"><label for="card">Credit / Debit card <img class="ml-4 mr-4" src=""
+                  alt=""></label>
+              <input type="radio" id="card" name="paymentMethod" class="custom-control-label" onclick="validateSubmit()"
+                value="card" required>
+            </div>
+            <div class="custom custom-radio">
+              <label for="COD">Pay when you get the package</label>
+              <input type="radio" id="COD" name="paymentMethod" class="custom-control-label" onclick="validateSubmit()"
+                value="COD" required>
+            </div>
+            <button id="checkoutBtn"  class="btn btn-dark btn-lg btn-block mt-3" type="submit">Place your
+              order</button>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+</section>
+<!-- Cart Total Page End -->
+
+
+<!-- Success HTML -->
+<div id="demoModal" class="modal fade">
+  <div class="modal-dialog modal-confirm">
+    <div class="modal-content">
+      <div class="modal-header justify-content-center">
+        <div class="icon-box">
+          <i class="material-icons">&#xE876;</i>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      </div>
+      <div class="modal-body text-center">
+        <h4>Great!</h4>
+        <p>Your order has been created successfully.</p>
+        <a href="/orders" class="btn btn-success" data-dismiss="modal"><span>Orders</span> <i
+            class="material-icons">&#xE5C8;</i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- Second success modal online pay --}}
+<!-- Modal HTML -->
+<div class="modal fade auto-off" id="demoModal2" tabindex="-1" role="dialog" aria-labelledby="demoModal"
+  aria-hidden="true">
+  <div class="modal-dialog animated zoomInDown modal-dialog-centered" role="document">
+    <div class="modal-content">
+
+      <div class="container-fluid">
+
+        <div class="row py-5">
+          <div class="col-md-12 m-h-20 bg-img rounded-left text-center">
+            <img style="max-width: 40%;"
+              src="https://lirp.cdn-website.com/bbca9e7c/dms3rep/multi/opt/green-tick-icon-0-1000x1000-640w.png" alt="">
+          </div>
+          <div class="col-md-12 text-center pt-4 px-sm-5 ">
+
+            <h2>Order Placed Successfuly</h2>
+            <p class="text-muted"></p>
+            <a href="/orders"><button class="btn btn-dark w-50">Go to Orders</button></a>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- add new Address MODAL --}}
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="p-4">
+        <form action='/addAddress' method="post">
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputEmail4">Name</label>
+              <input type="name" class="form-control"  name="name" id="inputEmail4" placeholder="Name" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputPassword4">Mobile Number</label>
+              <input type="text" maxlength="10" class="form-control" name="phone" id="inputPassword4"
+                placeholder="Mobile Number" required>
+            </div>
+          </div>
+          <label for="">Address</label>
+          <div class="form-group">
+            <textarea name="address" class="form-control" id="address" cols="50" placeholder="Address (Area and Street)"
+              rows="5" required></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputCity">City</label>
+              <input type="text" name="city" class="form-control" placeholder="city" id="inputCity" required>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="inputState">State</label>
+              <input type="text" class="form-control" placeholder="State" name="state" required>
+            </div>
+            <div class="form-group col-md-2">
+              <label for="inputZip">Zip Code</label>
+              <input type="text" class="form-control" name="postCode" placeholder="Zip Code" id="inputZip" required>
+            </div>
+          </div>
+          <label for="type">Address Type</label>
+          <div class="form-row text-dark" required>
+            <input type="radio" class="mr-1" name="type" value="home" required>Home &nbsp;&nbsp;&nbsp;
+            <input type="radio" class="mr-1" name="type" value="work" required>Work
+          </div>
+          <div class="text-center mt-2">
+            <input type="submit" class="btn btn-primary" value="SUBMIT">
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- modal deleteAddress --}}
+{{#each addresses}}
+<div class="modal fade" id="deleteAddr{{this._id}}" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Confirmation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Do you want to delete this address ?
+      </div>
+      <div class="modal-footer">
+        <a href=""><button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button></a>
+        <a href="/deleteAddress/{{this._id}}"><button type="button" class="btn btn-primary">confirm</button></a>
+      </div>
+    </div>
+  </div>
+</div>
+{{/each}}
+
+
+{{!-- Edit Address --}}
+{{#each addresses}}
+<div class="modal fade" id="edit{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="p-4">
+        <form action="/editAddress/{{this._id}}" method="post">
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputEmail4">Name</label>
+              <input type="name" class="form-control" name="name" id="inputEmail4" value="{{this.name}}"
+                placeholder="Name">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputPassword4">Mobile Number</label>
+              <input type="text" maxlength="10" class="form-control" name="phone" value="{{this.phone}}"
+                id="inputPassword4" placeholder="Mobile Number">
+            </div>
+          </div>
+          <label for="">Address</label>
+          <div class="form-group">
+            <input name="address" class="form-control input-lg" value="{{this.address}}" id="address" cols="50"
+              placeholder="Address (Area and Street)" rows="5">
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputCity">City</label>
+              <input type="text" name="city" class="form-control" value="{{this.city}}" placeholder="city"
+                id="inputCity">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="inputState">State</label>
+              <input type="text" class="form-control" value="{{this.state}}" placeholder="State" name="state">
+            </div>
+            <div class="form-group col-md-2">
+              <label for="inputZip">Zip Code</label>
+              <input type="text" class="form-control" value="{{this.postCode}}" name="postCode" placeholder="Zip Code"
+                id="inputZip">
+            </div>
+          </div>
+          <label for="type">Address Type</label>
+          <div class="form-row text-dark">
+            <input type="radio" class="mr-1" name="type" value="home">Home &nbsp;&nbsp;&nbsp;
+            <input type="radio" class="mr-1" name="type" value="work">Work
+          </div>
+          <div class="text-center mt-2">
+            <button type="submit" class="btn btn-primary">SUBMIT</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{/each}}
+
+
+<script>
+  function validateRadioAddr(){
+    var radioButtons = document.getElementsByName('address')
+    var isSelected = false
+    for(var i = 0;i<radioButtons.length;i++){
+    if(radioButtons[i].checked){
+        isSelected = true
+      break;
+    }
+    }
+    if(!isSelected){
+      alert('please select an address option')
+      return false
+    }
+    return true
+  }
+  function validateRadioCOD(){
+    var radioButtons = document.getElementsByName('paymentMethod')
+    var isSelected = false
+    for(var i = 0;i < radioButtons.length;i++){
+   if(radioButtons[i].checked){
+       isSelected = true
+      break;
+   }
+    }
+    if(!isSelected){
+      alert('please select an option')
+      return false
+    }
+    return true
+  }
+
+  function validateSubmit(){
+    if(validateRadioAddr()&&validateRadioCOD()){
+      const isCOD = document.getElementsByName('paymentMethod')
+      for(var i = 0;i < isCOD.length;i++){
+        if(isCOD[i].checked){
+          const value = isCOD[i].value;
+          if(value === "COD"|| value === "card"||value === "paypal"){
+            document.getElementById('checkoutBtn').removeAttribute('disabled');
+        }
+      }
+    }
+  }
+  } 
+
+  
+  $('#checkoutForm').on('submit', function (event) {
+    event.preventDefault();
+
+    // collect form data
+    var formData = $(this).serialize();
+
+    //formData += `&coupon=${coupon}`
+    // send AJAX request
+    axios({
+      url: '/placeOrder', // replace with your server-side script URL
+      method: 'POST', // or 'GET' depending on your server-side script
+      data: formData,
+    }).then((response) => {
+      if (response.data.paymentMethod === 'COD') {
+        const demoModal = new bootstrap.Modal(document.getElementById('demoModal'));
+        demoModal.show();
+        setTimeout(function () {
+          window.location.href = '/'; // redirect after the modal is displayed
+        }, 2000);
+
+      } else if (response.data.paymentMethod === 'card') {
+        //console.log(response.data.response + "responseeeeeeeeeeee");
+        //console.log(response.data.userDetails + "User detailes");
+        razorpayPayment(response.data.response, response.data.userDetails);
+      } else if (response.data.status === "success") {
+        window.location.href = response.data.approval_link;
+      }
+    }).catch((err) => {
+      console.log(err + "erorrrrr")
+    })
+
+  });
+
+</script>

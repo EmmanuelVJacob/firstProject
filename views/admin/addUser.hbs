@@ -1,0 +1,27 @@
+<div class="container pt-5 w-75 text-center">
+  <form class="row contact_form" action="/admin/addUser" method="post">
+    <div class="col-md-12 form-field p_star">
+      <input type="text" class="form-control validate" id="name" name="name" value="" placeholder="Username" required="required" />
+    </div>
+    <div class="col-md-12 form-field p_star">
+      <input type="password" class="form-control validate" id="password" name="Password" value="" placeholder="Password" required />
+    </div>
+    <div class="col-md-12 form-field p_star">
+      <input type="password" class="form-control validate" id="rePassword" name="rePassword" value="" placeholder="Confirm Password" required />
+    </div>
+    <div class="col-md-12 form-field p_star">
+      <input type="email" class="form-control validate" name="email" id="exampleInputEmail1" value="" placeholder="Enter email" required />
+    </div>
+    <div class="col-md-12 form-field p_star">
+      <input type="number" class="form-control validate" id="number" name="mobile" value="" placeholder="Phone Number" required />
+    </div>
+    <div class="col-md-12 form-group">
+      <div class="creat_account d-flex align-items-center">
+      </div>
+      <button type="submit" value="submit" class="btn_3 btn-success">Add User</button>
+      {{#if errMsg}}
+      <div id="msg" class="alert alert-danger ml-4">{{errMsg}}</div>
+      {{/if}}
+    </div>
+  </form>
+</div>

@@ -1,0 +1,19 @@
+<div class="text-center mt-4 nameSignup">
+  Enter OTP
+  <form action="/admin/adminotpVerification" method="post" class="p-3 mt-3">
+    <div class="form-field">
+      <input
+        type="text"
+        name="otp"
+        id="fullName"
+        placeholder="OTP"
+        required
+      />
+    </div>
+    {{#if errMsg}}
+      <div id="msg" class="alert alert-danger ml-4">{{errMsg}}</div>
+    {{/if}}
+
+    <button type="submit" class="btn mt-3">Submit OTP</button>
+  </form>
+</div>

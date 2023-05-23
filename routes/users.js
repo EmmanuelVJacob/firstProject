@@ -35,5 +35,6 @@ router.post('/editAddress/:id',userControllers.checkLoggedIn,userControllers.edi
 router.get('/deleteAddress/:id',userControllers.checkLoggedIn,userControllers.deleteAddress)
 router.post('/placeOrder',userControllers.checkLoggedIn,userControllers.placeOrder)
 
+router.get('/orders',userControllers.checkLoggedIn,userControllers.orders)
 
 module.exports = router;

@@ -195,4 +195,14 @@ module.exports = {
       reject(err);
     });
   },
+  getOrders:(userId)=>{
+    console.log(userId);
+    return new Promise(async(resolve,reject)=>{
+      userId = new objectId(userId)
+      const orders = await db.get().collection(collection.ORDER_COLLECTION).find(
+        {userId:userId}
+      ).sort({date:-1}).toArray();
+      resolve(orders)
+    })
+  }
 };

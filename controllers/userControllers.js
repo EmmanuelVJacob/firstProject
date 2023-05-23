@@ -305,6 +305,26 @@ module.exports = {
       console.log(err);
     }
   },
+  orders:async(req,res)=>{
+    const user = req.session.user
+    const userName = req.session.userName;
+    const userId = req.session.user._id
+    console.log(req.session.user);
+    const orders = await userHelper.getOrders(userId)
+    orders.forEach(order => {
+      order.isCancelled = order.status === 'cancelled'? true:false;
+      order.isDelivered = order.status === 'Delivered'? true:false;
+      order.isReturned = order.status === 'Return'? true:false;
+
+      const newDate = new Date(order.date)
+      const year = newDate.getFullYear();
+      const month = newDate.getMonth();
+      const day = newDate.getDate();
+      const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+      order.date = formattedDate;
+    });
+    res.render('user/orders',{userName,orders,user})
+  }
   }
 
 

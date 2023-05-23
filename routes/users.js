@@ -36,5 +36,5 @@ router.get('/deleteAddress/:id',userControllers.checkLoggedIn,userControllers.de
 router.post('/placeOrder',userControllers.checkLoggedIn,userControllers.placeOrder)
 
 router.get('/orders',userControllers.checkLoggedIn,userControllers.orders)
-
+router.get('/orders/viewProduct/:id',userControllers.checkLoggedIn,userControllers.viewDet)
 module.exports = router;

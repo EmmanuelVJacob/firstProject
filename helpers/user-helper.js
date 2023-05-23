@@ -204,5 +204,15 @@ module.exports = {
       ).sort({date:-1}).toArray();
       resolve(orders)
     })
-  }
+  },
+  getOrderedProducts:(ordersId)=>{ 
+    return new Promise(async(resolve, reject)=>{ 
+    ordersId =  new objectId(ordersId); 
+    console.log(ordersId);
+    const orders1 = await db.get().collection(collection.ORDER_COLLECTION).find({_id: ordersId}).toArray();
+    resolve(orders1); 
+    console.log(orders1);
+});
+},
+ 
 };

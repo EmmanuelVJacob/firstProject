@@ -324,7 +324,13 @@ module.exports = {
       order.date = formattedDate;
     });
     res.render('user/orders',{userName,orders,user})
-  }
+  },
+  viewDet: async (req, res) => {
+    const userName = req.session.userName;
+    const orderId = req.params.id;
+    const orders = await userHelper.getOrderedProducts(orderId);
+    res.render("user/viewDet", { user: true, userName, orders });
+  },
   }
 
 

@@ -224,11 +224,13 @@ module.exports = {
   editProductGet: (req, res) => {
     const productId = req.params.id;
     productHelpers.getSingleProductDetaile(productId).then((productData) => {
+      var images = productData.images
       productHelpers.getProductCategory().then((category) => {
         res.render("admin/editProduct", {
           userName: req.session.adminUserName,
           category,
-          productData,admin:true
+          productData,admin:true,
+          images
         });
       });
     });
@@ -244,7 +246,8 @@ module.exports = {
       stock: req.body.stock,
       price: req.body.price,
     };
-    productHelpers.editProduct(productId, data).then(async () => {
+    productHelpers.editProduct(productId, data)
+    .then(async () => {
       const imgUrls = [];
       try {
         for (let i = 0; i < req.files.length; i++) {
@@ -252,6 +255,7 @@ module.exports = {
           imgUrls.push(result.url);
         }
         if (imgUrls.length > 0) {
+          console.log(productId,'emman');
           productHelpers
             .editProductImage(productId, imgUrls)
             .then(() => {})
@@ -264,6 +268,14 @@ module.exports = {
       }
     });
   },
+  deleteProductImages:(req,res)=>{
+    console.log(req.body);
+    productHelpers.deleteSingleImage(req.body)
+    .then((response)=>{
+      res.json(response)
+    })
+    },
+  
   searchProduct: (req, res) => {
     productHelpers
       .searchProduct(req.body.name)

@@ -1,3 +1,11 @@
+<script src="/public/javascripts/elevatezoom.jquery.json"></script>
+<script src="/public/javascripts/jquery-1.8.3.min.js"></script>
+<script src="/public/javascripts/jquery.elevateZoom-3.0.8.min.js"></script>
+<script src="/public/javascripts/jquery.elevatezoom.js"></script>
+<script>
+  $("#zoom_01").elevateZoom();
+
+</script>
 <!--================Single Product Area =================-->
 
 <div class="product_image_area">
@@ -11,10 +19,12 @@
               class="single_product_img d-flex align-items-center justify-content-center"
             >
               <img
+                id="zoom_01"
                 style="width:11cm"
                 src="{{this}}"
                 alt="#"
                 class="img-fluid"
+                data-zoom-image="images/large/image1.jpg"
               />
 
             </div>
@@ -32,27 +42,13 @@
             ₹{{product.price}}
           </p>
           <div class="card_area">
-            {{!-- <div class="product_count_area">
-              <p>Quantity</p>
-
-              <div class="product_count d-inline-block">
-                <span class="product_count_item inumber-decrement">
-                  <i class="ti-minus"></i></span>
-                <input
-                  class="product_count_item input-number"
-                  name="quantity"
-                  type="text"
-                  value="1"
-                  min="1"
-                  max="{{product.stock}}"
-                />
-                <span class="product_count_item number-increment">
-                  <i class="ti-plus"></i></span>
-              </div>
-              <p>$5</p>
-            </div> --}}
             <div class="add_to_cart">
-              <a  onclick="addToCart('{{product._id}}')" class="btn_3">add to cart</a>
+              {{#if user}}
+                <a onclick="addToCart('{{product._id}}')" class="btn_3">add to
+                  cart</a>
+              {{else}}
+                <a href="/login" class="btn_3">add to cart</a>
+              {{/if}}
             </div>
           </div>
         </div>
@@ -64,38 +60,16 @@
 <!--================End Single Product Area =================-->
 
 <script>
-  function addToCart(productId) {
-    console.log(productId);
-    axios
-      .get(`/addToCart/${productId}`)
-      .then((response) => {
-        if (response.status) {
-          Toastify({
-            text: `${response.data.message}`,
-            duration: 3000,
-            className: "info",
-            gravity: "bottom",
-            position: "center",
-            style: {
-              background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
-            },
-          }).showToast();
-        }
-      })
-      .catch((err) => {
-        Toastify({
-          text: "Product is not added to cart",
-          duration: 3000,
-          gravity: "bottom",
-          position: "center",
-          backgroundColor: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
-          stopOnFocus: true,
-          close: true,
-          className: "toastify-info",
-        }).showToast();
-      });
-  }
+  function addToCart(productId) { console.log(productId); axios
+  .get(`/addToCart/${productId}`) .then((response) => { if (response.status) {
+  Toastify({ text: `${response.data.message}`, duration: 3000, className:
+  "info", gravity: "bottom", position: "center", style: { background:
+  "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+  }, }).showToast(); } }) .catch((err) => { Toastify({ text: "Product is not
+  added to cart", duration: 3000, gravity: "bottom", position: "center",
+  backgroundColor: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63,
+  61, 61) 78.9%)", stopOnFocus: true, close: true, className: "toastify-info",
+  }).showToast(); }); }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-

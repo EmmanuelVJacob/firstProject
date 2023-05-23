@@ -206,5 +206,14 @@ module.exports={
             })
         })
     },
+    deletCartFull:(userId)=>{
+        return new Promise (async(resolve,reject)=>{
+            await db.get().collection(collection.CART_COLLECTION).deleteOne(
+               {
+                userId:new objectId(userId)
+               } 
+            )
+        })
+    }
    
 }

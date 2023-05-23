@@ -2,6 +2,7 @@ var db = require("../config/connection");
 var collection = require("../config/collections");
 // var collection = require("../config/twilio");
 var bcrypt = require("bcrypt");
+const { response } = require("express");
 const objectId = require("mongodb-legacy").ObjectId;
 
 module.exports = {
@@ -136,16 +137,62 @@ module.exports = {
         );
     });
   },
-  deleteAddress:(addressId,userId)=>{
-    return new Promise((resolve,reject)=>{
-      db.get().collection(collection.USER_COLLECTION).updateOne({
-      _id:new objectId(userId),
-      "address._id":new objectId(addressId)
-      },
-      {
-        $pull:{address:{_id:new objectId(addressId)}}
-      }
-      )
-    })
-  }
+  deleteAddress: (addressId, userId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.USER_COLLECTION)
+        .updateOne(
+          {
+            _id: new objectId(userId),
+            "address._id": new objectId(addressId),
+          },
+          {
+            $pull: { address: { _id: new objectId(addressId) } },
+          }
+        );
+    });
+  },
+  findAddress: (addressId, userId) => {
+    return new Promise(async (resolve, reject) => {
+      const address = await db
+        .get()
+        .collection(collection.USER_COLLECTION)
+        .aggregate([
+          { $match: { _id: new objectId(userId) } },
+          { $unwind: "$address" },
+          { $match: { "address._id": new objectId(addressId) } },
+          { $project: { _id: 0, address: 1 } },
+        ])
+        .toArray();
+      resolve(address[0].address);
+    });
+  },
+  addOrderDetails: (order, userId) => {
+    return new Promise(async (resolve, reject) => {
+      delete order.coupon;
+      db.get()
+        .collection(collection.ORDER_COLLECTION)
+        .insertOne(order)
+        .then(async (response) => {
+          resolve(response);
+          for (let i = 0; i < order.item.length; i++) {
+            const stock = await db
+              .get()
+              .collection(collection.USER_COLLECTION)
+              .updateOne(
+                {
+                  _id: order.item[i].product._id,
+                },
+                {
+                  $inc: {
+                    stock: -order.item[i].quantity,
+                  },
+                }
+              );
+          }
+        });
+    }).catch((err) => {
+      reject(err);
+    });
+  },
 };

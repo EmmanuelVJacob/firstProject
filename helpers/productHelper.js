@@ -2,6 +2,7 @@ const adminController = require('../controllers/adminController')
 var db = require("../config/connection");
 var collection = require("../config/collections");
 const { ObjectId } = require("mongodb-legacy");
+const { response } = require('express');
 
 module.exports = {
     addProductCategory: (category) => {
@@ -82,7 +83,6 @@ module.exports = {
       },
       editProduct: (productId, data) => {
         return new Promise((resolve, reject) => {
-          console.log(productId+'emmanuekl');
           productId = new ObjectId(productId)
           db.get().collection(collection.PRODUCT_COLLECTION)
             .updateOne(
@@ -100,11 +100,35 @@ module.exports = {
                   listed: true
                 }
               }
+              
             ).then((response) => {
-              resolve()
+              resolve(productId)
             }).catch((err) => {
               reject();
             })
+        })
+      },
+      editProductImage: (id, imgUrls) => {
+        return new Promise((resolve, reject) => {
+          for (let i = 0; i < imgUrls.length; i++) {
+            db.get().collection(collection.PRODUCT_COLLECTION)
+              .updateOne(
+                {
+                  _id: new ObjectId(id)
+                },
+                {
+                  $push: {
+                    images: imgUrls[i]
+                  }
+                }
+              ).then((response) => {
+                if (i == imgUrls.length) {
+                  resolve()
+                }
+              }).catch((err) => {
+                reject()
+              })
+          }
         })
       },
       searchProduct: (search) => {
@@ -229,7 +253,27 @@ module.exports = {
           resolve(productSingleData);
         });
       },
-      
+      deleteSingleImage:(data)=>{
+        const productId=data.productId
+        const imgUrl=data.imgUrl
+    
+        return new Promise((resolve,reject)=>{
+          try{
+            db.get().collection(collection.PRODUCT_COLLECTION).updateOne(
+              {
+                _id:new ObjectId(productId)
+              },
+              {
+                $pull:{images:imgUrl}
+              }
+            ).then((response)=>{
+              resolve(response)
+            })
+          }catch(err){
+            console.log(err);
+          }
+        })
+      },
 }
 
 

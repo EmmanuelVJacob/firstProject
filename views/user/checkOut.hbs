@@ -3,6 +3,9 @@
 
 
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 
 {{!-- Modal styles --}}
 <style>
@@ -233,7 +236,7 @@
               <input type="radio" id="COD" name="paymentMethod" class="custom-control-label" onclick="validateSubmit()"
                 value="COD" required>
             </div>
-            <button id="checkoutBtn"  class="btn btn-dark btn-lg btn-block mt-3" type="submit">Place your
+            <button id="checkoutBtn" disabled class="btn btn-dark btn-lg btn-block mt-3" type="submit">Place your
               order</button>
           </div>
         </div>
@@ -297,42 +300,42 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="p-4">
-        <form action='/addAddress' method="post">
+        <form action="/checkOutPost" method="post">
 
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="inputEmail4">Name</label>
-              <input type="name" class="form-control"  name="name" id="inputEmail4" placeholder="Name" required>
+              <input type="name" class="form-control" name="name" id="inputEmail4" placeholder="Name">
             </div>
             <div class="form-group col-md-6">
               <label for="inputPassword4">Mobile Number</label>
               <input type="text" maxlength="10" class="form-control" name="phone" id="inputPassword4"
-                placeholder="Mobile Number" required>
+                placeholder="Mobile Number">
             </div>
           </div>
           <label for="">Address</label>
           <div class="form-group">
             <textarea name="address" class="form-control" id="address" cols="50" placeholder="Address (Area and Street)"
-              rows="5" required></textarea>
+              rows="5"></textarea>
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="inputCity">City</label>
-              <input type="text" name="city" class="form-control" placeholder="city" id="inputCity" required>
+              <input type="text" name="city" class="form-control" placeholder="city" id="inputCity">
             </div>
             <div class="form-group col-md-4">
               <label for="inputState">State</label>
-              <input type="text" class="form-control" placeholder="State" name="state" required>
+              <input type="text" class="form-control" placeholder="State" name="state">
             </div>
             <div class="form-group col-md-2">
               <label for="inputZip">Zip Code</label>
-              <input type="text" class="form-control" name="postCode" placeholder="Zip Code" id="inputZip" required>
+              <input type="text" class="form-control" name="postCode" placeholder="Zip Code" id="inputZip">
             </div>
           </div>
           <label for="type">Address Type</label>
-          <div class="form-row text-dark" required>
-            <input type="radio" class="mr-1" name="type" value="home" required>Home &nbsp;&nbsp;&nbsp;
-            <input type="radio" class="mr-1" name="type" value="work" required>Work
+          <div class="form-row text-dark">
+            <input type="radio" class="mr-1" name="type" value="home">Home &nbsp;&nbsp;&nbsp;
+            <input type="radio" class="mr-1" name="type" value="work">Work
           </div>
           <div class="text-center mt-2">
             <input type="submit" class="btn btn-primary" value="SUBMIT">
@@ -376,7 +379,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="p-4">
-        <form action="/editAddress/{{this._id}}" method="post">
+        <form action="/editAddressPost/{{this._id}}" method="post">
 
           <div class="form-row">
             <div class="form-group col-md-6">
@@ -392,7 +395,7 @@
           </div>
           <label for="">Address</label>
           <div class="form-group">
-            <input name="address" class="form-control input-lg" value="{{this.address}}" id="address" cols="50"
+            <input name="address" class="form-control" value="{{this.address}}" id="address" cols="50"
               placeholder="Address (Area and Street)" rows="5">
           </div>
           <div class="form-row">
@@ -428,60 +431,101 @@
 {{/each}}
 
 
+
 <script>
-  function validateRadioAddr(){
-    var radioButtons = document.getElementsByName('address')
-    var isSelected = false
-    for(var i = 0;i<radioButtons.length;i++){
-    if(radioButtons[i].checked){
-        isSelected = true
-      break;
+  function validateRadioAddr() {
+    var radioButtons = document.getElementsByName('address');
+    var isSelected = false;
+    for (var i = 0; i < radioButtons.length; i++) {
+      if (radioButtons[i].checked) {
+        isSelected = true;
+        break;
+      }
     }
+    if (!isSelected) {
+      alert('Please select an address option.');
+      return false;
     }
-    if(!isSelected){
-      alert('please select an address option')
-      return false
-    }
-    return true
-  }
-  function validateRadioCOD(){
-    var radioButtons = document.getElementsByName('paymentMethod')
-    var isSelected = false
-    for(var i = 0;i < radioButtons.length;i++){
-   if(radioButtons[i].checked){
-       isSelected = true
-      break;
-   }
-    }
-    if(!isSelected){
-      alert('please select an option')
-      return false
-    }
-    return true
+    return true;
   }
 
-  function validateSubmit(){
-    if(validateRadioAddr()&&validateRadioCOD()){
-      const isCOD = document.getElementsByName('paymentMethod')
-      for(var i = 0;i < isCOD.length;i++){
-        if(isCOD[i].checked){
+  function validateRadioCOD() {
+    var radioButtons = document.getElementsByName('paymentMethod');
+    var isSelected = false;
+    for (var i = 0; i < radioButtons.length; i++) {
+      if (radioButtons[i].checked) {
+        isSelected = true;
+        break;
+      }
+    }
+    if (!isSelected) {
+      alert('Please select an option.');
+      return false;
+    }
+    return true;
+  }
+
+  function validateSubmit() {
+    if (validateRadioAddr() && validateRadioCOD()) {
+      const isCOD = document.getElementsByName('paymentMethod');
+      for (var i = 0; i < isCOD.length; i++) {
+        if (isCOD[i].checked) {
           const value = isCOD[i].value;
-          if(value === "COD"|| value === "card"||value === "paypal"){
+          if (value === "COD" || value === "card" || value === "paypal") {
             document.getElementById('checkoutBtn').removeAttribute('disabled');
+          }
         }
       }
     }
   }
-  } 
 
-  
+
+
+
+  let coupon
+  function submitCoupon() {
+    let totalCost = parseInt(document.getElementById('total').value)
+    const code = document.getElementById('couponCode').value;
+    coupon = document.getElementById('couponCode').value;
+
+    console.log(code, coupon, totalCost + "asasasasas")
+
+    axios.post('/couponApply', { 'couponCode': code }).then((response) => {
+      if (response.data.status === 'success') {
+        const coupon = response.data.coupon;
+        if (coupon.status == 'Deactivated' || coupon.status == 'Expired') {
+          document.getElementById('invalidCoupon').innerHTML = "Coupon has been expired!"
+        } else if (totalCost <= 1000) {
+          document.getElementById('invalidCoupon').innerHTML = "Purchase for atleast 1000 to apply Coupon!"
+        } else {
+          const couponAmt = parseInt(coupon.discount);
+          totalCost = totalCost - couponAmt;
+
+          document.getElementById('total').value = totalCost;
+          document.getElementById('strong').innerHTML = `Rs.${totalCost}`;
+          document.getElementById('invalidCoupon').innerHTML = "";
+          document.getElementById('couponName').innerHTML = coupon.code;
+          document.getElementById('couponPrice').innerHTML = `Rs.${couponAmt}`;
+          document.getElementById('couponCode').value = code;
+          console.log(totalCost, couponAmt)
+        }
+      } else {
+        document.getElementById('invalidCoupon').innerHTML = response.data.status;
+      }
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+
+
   $('#checkoutForm').on('submit', function (event) {
     event.preventDefault();
 
     // collect form data
     var formData = $(this).serialize();
 
-    //formData += `&coupon=${coupon}`
+    formData += `&coupon=${coupon}`
     // send AJAX request
     axios({
       url: '/placeOrder', // replace with your server-side script URL
@@ -507,5 +551,60 @@
     })
 
   });
+
+
+
+
+  function razorpayPayment(order, userDetails) {
+    var options = {
+      "key": "rzp_test_vvCKSsUVdpOthK",       // Enter the Key ID generated from the Dashboard
+      "amount": order.amount * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      "currency": "INR",
+      "name": "Marvelous Wear", //your business name
+      "description": "Test Transaction",
+      "image": "https://res.cloudinary.com/dcc8meh8i/image/upload/v1679116198/logo3_gtrtz9.jpg",
+      "order_id": order.id,       //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      //"callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
+
+      "handler": function (response) {
+        verifyPayment(response, order);
+      },
+      "prefill": {
+        "name": userDetails.name,
+        "email": userDetails.email,
+        "contact": userDetails.phone
+      },
+      "notes": {
+        "address": "Razorpay Corporate Office"
+      },
+      "theme": {
+        "color": "#3399cc"
+      }
+    }
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+  };
+
+  function verifyPayment(response, order) {
+    axios({
+      url: "/verifyPayment",
+      method: "POST",
+      data: {
+        response: response,
+        order: order
+      }
+    }).then((response) => {
+      if (response.data.status) {
+        //console.log("hiiiiiii")
+        const demoModal2 = new bootstrap.Modal(document.getElementById('demoModal2'));
+        demoModal2.show();
+        setTimeout(function () {
+          window.location.href = '/';
+        }, 2000);
+      }
+    }).catch((error) => {
+      console.error(error);
+    })
+  };
 
 </script>

@@ -33,7 +33,7 @@ router.get('/checkOut',userControllers.checkLoggedIn, userControllers.checkOutPa
 router.post('/addAddress',userControllers.checkLoggedIn,userControllers.addAdress)
 router.post('/editAddress/:id',userControllers.checkLoggedIn,userControllers.editAddress)
 router.get('/deleteAddress/:id',userControllers.checkLoggedIn,userControllers.deleteAddress)
-router.get('/placeOrder',userControllers.checkLoggedIn,userControllers.placeOrder)
+router.post('/placeOrder',userControllers.checkLoggedIn,userControllers.placeOrder)
 
 
 module.exports = router;

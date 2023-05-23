@@ -61,6 +61,7 @@ router.post(
   multer.array("image"),
   adminController.editProduct
 )
+router.post('/deleteSelectedImg',adminController.checkLoggedIn,adminController.deleteProductImages)
 router.post(
   "/searchProduct",
   adminController.checkLoggedIn,

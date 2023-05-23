@@ -8,6 +8,7 @@ const objectId = require("mongodb-legacy").ObjectId;
 const cartHelper= require('../helpers/cartHelpers')
 const { default: axios } = require('axios');
 const { log } = require("handlebars/runtime");
+const cartHelpers = require("../helpers/cartHelpers");
 
 
 module.exports = {
@@ -264,8 +265,46 @@ module.exports = {
     userHelper.deleteAddress(addressId,req.session.user._id)
     res.redirect("back")
   },
-  placeOrder: async(req,res)=>{
-    console.log(req.body);
+  placeOrder: async (req, res) => {
+    try {
+      const addressId = req.body.address;
+      const userDetails = req.session.user;
+      // console.log(userDetails + "user detailes");
+      const total = await cartHelpers.getCartTotal(req.session.user._id);
+      const paymentMethod = req.body.paymentMethod;
+      const shippingAddress = await userHelper.findAddress(addressId,req.session.user._id);
+      const cartItems = await cartHelpers.getCart(req.session.user._id);
+      const now = new Date();
+      const status = req.body.paymentMethod === "COD" ? "placed": "pending";
+      const order = {
+        userId: new objectId(req.session.user._id),
+        userName: req.session.userName,
+        item: cartItems,
+        shippingAddress: shippingAddress,
+        total: total,
+        paymentMethod: paymentMethod,
+        products: cartItems,
+        date: new Date(now.getFullYear(),now.getMonth(),now.getDate(),0,0,0,0),
+        status,
+        coupon: req.body.coupon,
+      };
+      const userId = req.session.user._id;
+      userHelper.addOrderDetails(order, userId)
+        .then((order) => {
+          cartHelpers.deletCartFull(req.session.user._id);
+
+          if (req.body.paymentMethod === "COD") {
+            res.json({
+              status: true,
+              paymentMethod: req.body.paymentMethod,
+            });
+
+          }
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  },
   }
-};
+
 

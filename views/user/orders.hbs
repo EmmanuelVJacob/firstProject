@@ -42,9 +42,9 @@
                                 <td>{{status}}</td>
                                 <td><a class="btn btn-dark" href="/orders/viewProduct/{{_id}}">View Details</a></td>
                                  {{#if isCancelled}}
-                                <td><a class=" btn btn-danger text-light">Cancel Order</a></td>
+                                <td><a class=" btn btn-danger text-light"> Order Cancelled </a></td>
                                  {{else if isDelivered}}
-                                <td><a class=" btn btn-danger text-light" data-toggle="modal" data-target="#return{{_id}}">Return Order</a></td>
+                                <td><a class=" btn btn-danger text-light" data-toggle="modal" data-target="#return{{_id}}">   Return Order   &nbsp;</a></td>
                                 {{else if isReturned}}
                                 <td><a href="" class="btn btn-danger disabled">order returned</a> &nbsp;</td>
                                 {{else}}

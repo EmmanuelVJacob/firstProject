@@ -37,4 +37,8 @@ router.post('/placeOrder',userControllers.checkLoggedIn,userControllers.placeOrd
 
 router.get('/orders',userControllers.checkLoggedIn,userControllers.orders)
 router.get('/orders/viewProduct/:id',userControllers.checkLoggedIn,userControllers.viewDet)
+router.get('/cancelOrder/:id',userControllers.checkLoggedIn,userControllers.deleteOrder)
+router.get('/returnOrder/:id',userControllers.checkLoggedIn,userControllers.returnOrder)
+
+
 module.exports = router;

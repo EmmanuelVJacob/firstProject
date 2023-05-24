@@ -2,6 +2,7 @@ const adminController = require('../controllers/adminController')
 var db = require("../config/connection");
 var collection = require("../config/collections");
 const { ObjectId } = require("mongodb-legacy");
+const { response } = require('express');
 
 module.exports = {
     doLogin: (userData) => {
@@ -128,4 +129,26 @@ module.exports = {
             });
         });
       },
+      getUserOrder:() => {
+        return new Promise(async(resolve, reject) => {
+            const userOrders = await db.get().collection(collection.ORDER_COLLECTION).find().sort({date:-1}).toArray();
+            resolve(userOrders);
+        });
+    },
+    adminOrderStatus:(orderId,status)=>{
+      return new Promise(async(resolve,reject)=>{
+        db.get().collection(collection.ORDER_COLLECTION).updateOne(
+          {
+            _id:new ObjectId(orderId)
+          },
+          {
+            $set: {
+              "status":status
+            }
+          }
+        ).then((response)=>{
+          resolve(response)
+        })
+      })
+    }
 }

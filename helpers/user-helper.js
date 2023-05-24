@@ -62,7 +62,6 @@ module.exports = {
           response.status = "User Blocked";
           resolve(response);
         }
-        console.log(user.Password);
         bcrypt.compare(userData.password, user.Password).then((status) => {
           if (status) {
             response.user = user;
@@ -114,7 +113,6 @@ module.exports = {
   },
   editAddress: (info, userId, address) => {
     return new Promise(async (resolve, reject) => {
-      console.log(address);
       await db
         .get()
         .collection(collection.USER_COLLECTION)
@@ -196,7 +194,6 @@ module.exports = {
     });
   },
   getOrders:(userId)=>{
-    console.log(userId);
     return new Promise(async(resolve,reject)=>{
       userId = new objectId(userId)
       const orders = await db.get().collection(collection.ORDER_COLLECTION).find(
@@ -208,11 +205,37 @@ module.exports = {
   getOrderedProducts:(ordersId)=>{ 
     return new Promise(async(resolve, reject)=>{ 
     ordersId =  new objectId(ordersId); 
-    console.log(ordersId);
     const orders1 = await db.get().collection(collection.ORDER_COLLECTION).find({_id: ordersId}).toArray();
     resolve(orders1); 
-    console.log(orders1);
 });
 },
- 
+deleteOrder:(ordersId)=>{
+  return new Promise((resolve,reject)=>{
+    const orderId = new objectId(ordersId)
+    db.get().collection(collection.ORDER_COLLECTION).updateOne(
+      {
+        _id:orderId
+      },{
+        $set:{
+          status:"cancelled"
+        }
+      }
+    ).then((response)=>{
+      resolve(response)
+  })
+  })
+},
+returnProduct:(orderId)=>{
+  return new Promise((resolve,reject)=>{
+  db.get().collection(collection.ORDER_COLLECTION).updateOne(
+    {
+      _id:new objectId(orderId)
+    },{
+      $set:{
+        status: "Return"
+      }
+    }
+  ).then((response)=>{resolve(response)})
+ })
+}
 };

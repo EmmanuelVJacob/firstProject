@@ -261,7 +261,6 @@ module.exports = {
   },
   deleteAddress:(req,res)=>{
     const addressId = req.params.id
-    console.log(addressId);
     userHelper.deleteAddress(addressId,req.session.user._id)
     res.redirect("back")
   },
@@ -309,7 +308,6 @@ module.exports = {
     const user = req.session.user
     const userName = req.session.userName;
     const userId = req.session.user._id
-    console.log(req.session.user);
     const orders = await userHelper.getOrders(userId)
     orders.forEach(order => {
       order.isCancelled = order.status === 'cancelled'? true:false;
@@ -331,6 +329,18 @@ module.exports = {
     const orders = await userHelper.getOrderedProducts(orderId);
     res.render("user/viewDet", { user: true, userName, orders });
   },
+  deleteOrder:(req,res)=>{
+    const orderId = req.params.id
+    userHelper.deleteOrder(orderId).then(()=>{
+      res.redirect('back')
+    })
+  },
+  returnOrder:(req,res)=>{
+    const orderId = req.params.id
+    userHelper.returnProduct(orderId).then(()=>{
+      res.redirect('back')
+    })
+  }
   }
 
 

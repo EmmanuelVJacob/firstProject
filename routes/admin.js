@@ -98,4 +98,8 @@ router.post(
   adminController.checkLoggedIn,
   adminController.searchUser
 );
+router.get('/order',adminController.checkLoggedIn,adminController.adminOrder)
+router.post('/adminOrderStatus/:id',adminController.checkLoggedIn,adminController.adminOrderStatus)
+
+
 module.exports = router;

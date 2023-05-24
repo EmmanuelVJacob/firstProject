@@ -357,4 +357,16 @@ module.exports = {
         res.render("admin/accounts", { errMsg: err,admin:true });
       });
   },
+  adminOrder:(req,res)=>{
+    adminHelper.getUserOrder().then((adminOrder)=>{
+      res.render('admin/order',{admin:true,adminOrder})
+    })
+  },
+  adminOrderStatus:(req,res)=>{
+    const orderId = req.params.id
+    const  status = req.body.status
+    adminHelper.adminOrderStatus(orderId,status).then(()=>{
+      res.redirect('back')
+    })
+  }
 };

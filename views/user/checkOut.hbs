@@ -539,13 +539,7 @@
           window.location.href = '/'; // redirect after the modal is displayed
         }, 2000);
 
-      } else if (response.data.paymentMethod === 'card') {
-        //console.log(response.data.response + "responseeeeeeeeeeee");
-        //console.log(response.data.userDetails + "User detailes");
-        razorpayPayment(response.data.response, response.data.userDetails);
-      } else if (response.data.status === "success") {
-        window.location.href = response.data.approval_link;
-      }
+      } 
     }).catch((err) => {
       console.log(err + "erorrrrr")
     })
@@ -555,35 +549,7 @@
 
 
 
-  function razorpayPayment(order, userDetails) {
-    var options = {
-      "key": "rzp_test_vvCKSsUVdpOthK",       // Enter the Key ID generated from the Dashboard
-      "amount": order.amount * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-      "currency": "INR",
-      "name": "Marvelous Wear", //your business name
-      "description": "Test Transaction",
-      "image": "https://res.cloudinary.com/dcc8meh8i/image/upload/v1679116198/logo3_gtrtz9.jpg",
-      "order_id": order.id,       //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-      //"callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
 
-      "handler": function (response) {
-        verifyPayment(response, order);
-      },
-      "prefill": {
-        "name": userDetails.name,
-        "email": userDetails.email,
-        "contact": userDetails.phone
-      },
-      "notes": {
-        "address": "Razorpay Corporate Office"
-      },
-      "theme": {
-        "color": "#3399cc"
-      }
-    }
-    var rzp1 = new Razorpay(options);
-    rzp1.open();
-  };
 
   function verifyPayment(response, order) {
     axios({

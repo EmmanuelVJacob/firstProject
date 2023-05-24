@@ -359,7 +359,7 @@ module.exports = {
   },
   adminOrder:(req,res)=>{
     adminHelper.getUserOrder().then((adminOrder)=>{
-      res.render('admin/order',{admin:true,adminOrder})
+      res.render('admin/adminOrder',{admin:true,adminOrder})
     })
   },
   adminOrderStatus:(req,res)=>{

@@ -326,8 +326,9 @@ module.exports = {
   viewDet: async (req, res) => {
     const userName = req.session.userName;
     const orderId = req.params.id;
+    const user = req.session.user
     const orders = await userHelper.getOrderedProducts(orderId);
-    res.render("user/viewDet", { user: true, userName, orders });
+    res.render("user/viewDet", { user, userName, orders });
   },
   deleteOrder:(req,res)=>{
     const orderId = req.params.id

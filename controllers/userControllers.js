@@ -9,6 +9,7 @@ const cartHelper= require('../helpers/cartHelpers')
 const { default: axios } = require('axios');
 const { log } = require("handlebars/runtime");
 const cartHelpers = require("../helpers/cartHelpers");
+const { response } = require("express");
 
 
 module.exports = {
@@ -227,7 +228,8 @@ module.exports = {
   },
 
   checkOutPage: async (req, res) => {
-    const userName = req.session.user.name;
+    const userName = req.session.user;
+    const user = req.session.user
     const addresses = await userHelper.getAddress(req.session.user._id);
     await cartHelper
       .getCartTotal(req.session.user._id)
@@ -235,7 +237,7 @@ module.exports = {
         res.render("user/checkOut", {
           userName,
           addresses,
-          total,
+          total,user
         });
       })
       .catch((err) => {
@@ -243,6 +245,7 @@ module.exports = {
       });
   },
   addAdress:(req,res)=>{
+    console.log('emman');
     try{
       userHelper.addAddress(req.body,req.session.user._id)
       res.redirect('back')
@@ -298,7 +301,17 @@ module.exports = {
               paymentMethod: req.body.paymentMethod,
             });
 
-          }
+          }else if (req.body.paymentMethod === "card"){
+            const orderId = order.insertedId;
+            console.log(total);
+            userHelper.generateRazorpay(orderId,total).then((response)=>{
+              res.json({
+                response: response,
+                paymentMethod:"card",
+                userDetails: userDetails
+              })
+            })
+            }
         });
     } catch (err) {
       console.log(err);
@@ -341,7 +354,18 @@ module.exports = {
     userHelper.returnProduct(orderId).then(()=>{
       res.redirect('back')
     })
-  }
+  },
+  getCategoryWiseProducts: async(req, res) => {
+    CategoryID = req.params.name
+    console.log(CategoryID);
+    let productData= await productHelpers.getCategoryWiseProducts(CategoryID)
+    let category = await productHelpers.getProductCategory()
+    if (req.session.user) {
+      res.render('user/shop', {user:req.session.user, userName:req.session.userName,productData,category});
+    } else {
+      res.render("user/shop",{productData,category});
+    }
+  },
   }
 
 

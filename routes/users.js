@@ -40,5 +40,5 @@ router.get('/orders/viewProduct/:id',userControllers.checkLoggedIn,userControlle
 router.get('/cancelOrder/:id',userControllers.checkLoggedIn,userControllers.deleteOrder)
 router.get('/returnOrder/:id',userControllers.checkLoggedIn,userControllers.returnOrder)
 
-
+router.get('/categoryFilter/:name',userControllers.getCategoryWiseProducts)
 module.exports = router;

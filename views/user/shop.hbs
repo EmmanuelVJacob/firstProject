@@ -1,6 +1,13 @@
 <main>
-  <!-- Hero Area Start-->
 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Add custom CSS */
+        .navbar .nav-item .nav-link.active {
+            border-bottom: 2px solid red;
+        }
+    </style>
+  <!-- Hero Area Start-->
   <!-- Hero Area End-->
   <!-- Latest Products Start -->
   <section class="popular-items latest-padding">
@@ -8,24 +15,22 @@
       <div class="row product-btn justify-content-between mb-40">
         <div class="properties__button">
           <!--Nav Button  -->
-          <nav>
-
-            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-              {{#each category}}
-                {{#if listed}}
-                  <a
-                    class="nav-item nav-link active"
-                    data-toggle="tab"
-                    href="/shop"
-                    role="tab"
-                    aria-controls="nav-home"
-                  >{{this.category}}</a>
-
-                {{/if}}
-              {{/each}}
-            </div>
-
-          </nav>
+      <nav class="navbar navbar-light ">
+ <nav class="navbar navbar-expand-lg navbar-light ">
+       {{#each category}}
+       {{#if listed}}
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/categoryFilter/{{this.category}}">{{this.category}}</a>
+                </li>
+                
+            </ul>
+        </div>
+        {{/if}}
+        {{/each}}
+    </nav>
+</nav>
           <!--End Nav Button  -->
         </div>
         <!-- Grid and List view -->
@@ -274,4 +279,15 @@
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
- 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        // Add active class to clicked navigation item
+        $(document).ready(function() {
+            $(".navbar-nav .nav-link").click(function() {
+                $(".navbar-nav .nav-link").removeClass("active");
+                $(this).addClass("active");
+            });
+        });
+    </script>

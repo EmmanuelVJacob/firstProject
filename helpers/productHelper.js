@@ -3,6 +3,7 @@ var db = require("../config/connection");
 var collection = require("../config/collections");
 const { ObjectId } = require("mongodb-legacy");
 const { response } = require('express');
+const { json } = require('body-parser');
 
 module.exports = {
     addProductCategory: (category) => {
@@ -274,6 +275,18 @@ module.exports = {
           }
         })
       },
+      getCategoryWiseProducts: (CategoryID) => {
+        console.log(CategoryID);
+        return new Promise(async (resolve, reject) => {
+          const productData = await db.get().collection(collection.PRODUCT_COLLECTION).find({ listed: true, category:CategoryID }).toArray();
+          if (productData.length > 0) {
+            resolve(productData);
+          } else {
+            resolve([]);
+          }
+        });
+      }
+      
 }
 
 

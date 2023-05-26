@@ -1,11 +1,11 @@
-<script src="/public/javascripts/elevatezoom.jquery.json"></script>
-<script src="/public/javascripts/jquery-1.8.3.min.js"></script>
-<script src="/public/javascripts/jquery.elevateZoom-3.0.8.min.js"></script>
-<script src="/public/javascripts/jquery.elevatezoom.js"></script>
-<script>
-  $("#zoom_01").elevateZoom();
 
-</script>
+
+  {{!-- jquery 3.3.1 --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  {{!-- elevate zoom --}}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
+
 <!--================Single Product Area =================-->
 
 <div class="product_image_area">
@@ -15,19 +15,11 @@
         <div class="product_img_slide owl-carousel">
           {{#each images}}
 
-            <div
-              class="single_product_img d-flex align-items-center justify-content-center"
-            >
-              <img
-                id="zoom_01"
-                style="width:11cm"
-                src="{{this}}"
-                alt="#"
-                class="img-fluid"
-                data-zoom-image="images/large/image1.jpg"
-              />
+          <div class="single_product_img d-flex align-items-center justify-content-center">
+            <img src="{{this}}" id="main_product_image" style="width:11cm"
+                                data-zoom-image='{{this}}' class="img-fluid" alt="image of product">
 
-            </div>
+          </div>
           {{/each}}
 
         </div>
@@ -44,10 +36,10 @@
           <div class="card_area">
             <div class="add_to_cart">
               {{#if user}}
-                <a onclick="addToCart('{{product._id}}')" class="btn_3">add to
-                  cart</a>
+              <a onclick="addToCart('{{product._id}}')" class="btn_3">add to
+                cart</a>
               {{else}}
-                <a href="/login" class="btn_3">add to cart</a>
+              <a href="/login" class="btn_3">add to cart</a>
               {{/if}}
             </div>
           </div>
@@ -60,16 +52,59 @@
 <!--================End Single Product Area =================-->
 
 <script>
-  function addToCart(productId) { console.log(productId); axios
-  .get(`/addToCart/${productId}`) .then((response) => { if (response.status) {
-  Toastify({ text: `${response.data.message}`, duration: 3000, className:
-  "info", gravity: "bottom", position: "center", style: { background:
-  "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
-  }, }).showToast(); } }) .catch((err) => { Toastify({ text: "Product is not
-  added to cart", duration: 3000, gravity: "bottom", position: "center",
-  backgroundColor: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63,
-  61, 61) 78.9%)", stopOnFocus: true, close: true, className: "toastify-info",
-  }).showToast(); }); }
+  function addToCart(productId) {
+    axios
+      .get(`/addToCart/${productId}`)
+      .then((response) => {
+        if (response.status) {
+          Toastify({
+            text: `${response.data.message}`,
+            duration: 3000,
+            className: "info",
+            gravity: "bottom",
+            position: "center",
+            style: {
+              background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+            },
+          }).showToast();
+        }
+      })
+      .catch((err) => {
+        Toastify({
+          text: "Product is not added to cart",
+          duration: 3000,
+          gravity: "bottom",
+          position: "center",
+          backgroundColor: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+          stopOnFocus: true,
+          close: true,
+          className: "toastify-info",
+        }).showToast();
+      });
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+{{!-- elevate zoom --}}
+<script>
+
+   let main_product_image = document.getElementsByClassName('img-fluid');
+$("#main_product_image").data('zoom-image', main_product_image.src).elevateZoom({
+  responsive: true,
+  borderSize: 1,
+  borderColour: '#fff',
+  lensShape: 'square',
+  lensSize: 1,
+  zoomWindowFadeIn: false,
+  zoomWindowFadeOut: false,
+});
+
+
+
+   
+
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

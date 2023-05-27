@@ -366,6 +366,19 @@ module.exports = {
       res.render("user/shop",{productData,category});
     }
   },
+  verifyPayment:(req,res)=>{
+    try{
+      userHelper.verifyPayment(req.body).then(()=>{
+        userHelper.changeOrderStatus(req.body.order.receipt).then(()=>{
+          res.json({
+            status:true
+          })
+        })
+      })
+    }catch(err){
+      console.log(err);
+    }
+  }
   }
 
 

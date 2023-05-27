@@ -41,4 +41,6 @@ router.get('/cancelOrder/:id',userControllers.checkLoggedIn,userControllers.dele
 router.get('/returnOrder/:id',userControllers.checkLoggedIn,userControllers.returnOrder)
 
 router.get('/categoryFilter/:name',userControllers.getCategoryWiseProducts)
+
+router.post('/verifyPayment',userControllers.checkLoggedIn,userControllers.verifyPayment)
 module.exports = router;

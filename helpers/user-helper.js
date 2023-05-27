@@ -2,16 +2,20 @@ var db = require("../config/connection");
 var collection = require("../config/collections");
 // var collection = require("../config/twilio");
 var bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const { response } = require("express");
-const Razorpay = require('razorpay')
+const Razorpay = require("razorpay");
+const { promiseHooks } = require("v8");
+const { resolve } = require("path");
+const { rejects } = require("assert");
 const objectId = require("mongodb-legacy").ObjectId;
 const razorpay_key_id = process.env.RAZORPAY_KEY_ID;
 const razorpay_key_secret = process.env.RAZORPAY_KEY_SECRET;
 
 var instance = new Razorpay({
-  key_id: razorpay_key_id, 
-  key_secret: razorpay_key_secret, 
- })
+  key_id: razorpay_key_id,
+  key_secret: razorpay_key_secret,
+});
 
 module.exports = {
   verifyMobile: (mob) => {
@@ -201,71 +205,120 @@ module.exports = {
       reject(err);
     });
   },
-  getOrders:(userId)=>{
-    return new Promise(async(resolve,reject)=>{
-      userId = new objectId(userId)
-      const orders = await db.get().collection(collection.ORDER_COLLECTION).find(
-        {userId:userId}
-      ).sort({date:-1}).toArray();
-      resolve(orders)
-    })
+  getOrders: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      userId = new objectId(userId);
+      const orders = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .find({ userId: userId })
+        .sort({ date: -1 })
+        .toArray();
+      resolve(orders);
+    });
   },
-  getOrderedProducts:(ordersId)=>{ 
-    return new Promise(async(resolve, reject)=>{ 
-    ordersId =  new objectId(ordersId); 
-    const orders1 = await db.get().collection(collection.ORDER_COLLECTION).find({_id: ordersId}).toArray();
-    resolve(orders1); 
-});
-},
-deleteOrder:(ordersId)=>{
-  return new Promise((resolve,reject)=>{
-    const orderId = new objectId(ordersId)
-    db.get().collection(collection.ORDER_COLLECTION).updateOne(
-      {
-        _id:orderId
-      },{
-        $set:{
-          status:"cancelled"
-        }
-      }
-    ).then((response)=>{
-      resolve(response)
-  })
-  })
-},
-returnProduct:(orderId)=>{
-  return new Promise((resolve,reject)=>{
-  db.get().collection(collection.ORDER_COLLECTION).updateOne(
-    {
-      _id:new objectId(orderId)
-    },{
-      $set:{
-        status: "Return"
-      }
-    }
-  ).then((response)=>{resolve(response)})
- })
-},
-generateRazorpay:(orderId, total) => {
-  return new Promise ((resolve, reject) => {
+  getOrderedProducts: (ordersId) => {
+    return new Promise(async (resolve, reject) => {
+      ordersId = new objectId(ordersId);
+      const orders1 = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .find({ _id: ordersId })
+        .toArray();
+      resolve(orders1);
+    });
+  },
+  deleteOrder: (ordersId) => {
+    return new Promise((resolve, reject) => {
+      const orderId = new objectId(ordersId);
+      db.get()
+        .collection(collection.ORDER_COLLECTION)
+        .updateOne(
+          {
+            _id: orderId,
+          },
+          {
+            $set: {
+              status: "cancelled",
+            },
+          }
+        )
+        .then((response) => {
+          resolve(response);
+        });
+    });
+  },
+  returnProduct: (orderId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.ORDER_COLLECTION)
+        .updateOne(
+          {
+            _id: new objectId(orderId),
+          },
+          {
+            $set: {
+              status: "Return",
+            },
+          }
+        )
+        .then((response) => {
+          resolve(response);
+        });
+    });
+  },
+  generateRazorpay: (orderId, total) => {
+    return new Promise((resolve, reject) => {
       total = Number(total).toFixed(0);
       orderId = String(orderId);
-      instance.orders.create({
+      instance.orders.create(
+        {
           amount: parseInt(total) * 100,
           currency: "INR",
           receipt: orderId,
-        },(err, order)=> {
-      if(err){
-          console.log(err);
-          reject(err);
-      }else{
-          
-          resolve(order);
-      }
-  })
+        },
+        (err, order) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+          } else {
+            resolve(order);
+          }
+        }
+      );
+    });
+  },
+  verifyPayment:(details)=>{
+    return new Promise((resolve, reject)=>{            
+        let hmac = crypto.createHmac('sha256', razorpay_key_secret);
+         
+        hmac.update(details.response.razorpay_order_id + '|' + details.response.razorpay_payment_id);
+        hmac = hmac.digest('hex');
+        if(hmac===details.response.razorpay_signature){
+            resolve();
+        }else{
+            reject();
+        }
+    });
+},
 
-})
-
-
+  changeOrderStatus:(orderId) => {
+    return new Promise((resolve, reject) => {
+        db.get().collection(collection.ORDER_COLLECTION).updateOne(
+            {
+                _id: new objectId(orderId)
+            },
+            {
+                $set: {
+                    status: "placed"
+                }
+            }
+        ).then((response) => {
+            resolve(response)
+        }).catch((err) => {
+            
+            console.log(err);
+        })
+    })
 },
 };

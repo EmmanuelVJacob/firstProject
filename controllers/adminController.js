@@ -344,6 +344,16 @@ module.exports = {
   blockUser: (req, res) => {
     userId = req.params.id;
     adminHelper.blockUser(userId).then(() => {
+      req.session.userLoggedIn = false;
+      req.session.user = false;
+      req.session.userName = false;
+      res.redirect("/admin/accounts");
+    });
+  },
+  UnBlockUser: (req, res) => {
+    userId = req.params.id;
+    console.log(userId);
+    adminHelper.UnBlockUser(userId).then(() => {
       res.redirect("/admin/accounts");
     });
   },

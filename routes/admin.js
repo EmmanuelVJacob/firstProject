@@ -94,6 +94,11 @@ router.get(
   adminController.checkLoggedIn,
   adminController.blockUser
 );
+router.get(
+  "/UnBlock/:id",
+  adminController.checkLoggedIn,
+  adminController.UnBlockUser
+);
 router.post(
   "/searchUser",
   adminController.checkLoggedIn,

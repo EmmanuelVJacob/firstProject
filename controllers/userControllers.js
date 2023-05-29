@@ -378,6 +378,31 @@ module.exports = {
     }catch(err){
       console.log(err);
     }
+  },
+  couponApply:(req,res)=>{
+    const userId = req.session.user._id
+    userHelper.couponApply(req.body.couponCode,userId).then((coupon)=>{
+      if(coupon){
+        if(coupon === "couponExists"){
+          res.json({
+            status:"coupon is already used, try another coupon"  
+          })
+        }else{
+          userHelper.addToUsedCoupon(coupon,userId).then(()=>{
+            res.json({
+              status:"success",
+              coupon:coupon
+            })
+          })
+
+        
+        }
+      }else{
+        res.json({
+          status:"coupon is not valid!!"
+        })
+      }
+    })
   }
   }
 

@@ -43,4 +43,5 @@ router.get('/returnOrder/:id',userControllers.checkLoggedIn,userControllers.retu
 router.get('/categoryFilter/:name',userControllers.getCategoryWiseProducts)
 
 router.post('/verifyPayment',userControllers.checkLoggedIn,userControllers.verifyPayment)
+router.post('/couponApply',userControllers.checkLoggedIn,userControllers.couponApply)
 module.exports = router;

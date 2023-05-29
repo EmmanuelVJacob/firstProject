@@ -368,5 +368,21 @@ module.exports = {
     adminHelper.adminOrderStatus(orderId,status).then(()=>{
       res.redirect('back')
     })
+  },
+  adminCoupon:async(req,res)=>{
+    const coupons = await adminHelper.getCoupon();
+    console.log(coupons,'emman');
+    coupons.forEach(coupon => {
+      coupon.deactivate = coupon.status === 'Deactivated'?true:false;
+      coupon.expired = coupon.status === 'Expired'?true:false;
+    });
+    res.render('admin/adminCoupon',{admin:true,coupons})
+  },
+  adminAddCoupon:(req,res)=>{
+    adminHelper.adminAddCoupon(req.body).then(()=>{
+      res.redirect('/admin/adminCoupon')
+    }).catch(()=>{
+      res.redirect('/admin/adminCoupon')
+    })
   }
 };

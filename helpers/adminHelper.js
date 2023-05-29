@@ -150,5 +150,48 @@ module.exports = {
           resolve(response)
         })
       })
+    },
+    getCoupon:()=>{
+      return new Promise(async(resolve,reject)=>{
+        const coupons = await db.get().collection(collection.COUPON_COLLECTION).find().toArray()
+        const newDate = new Date();
+        coupons.forEach(coupon => {
+          if(coupon.date < newDate){
+            coupon.status = 'Expired'
+          }
+          const date = coupon.date;
+          const year = date.getFullYear()
+          const month = date.getMonth() + 1; // add 1 because months are zero-indexed
+          const day = date.getDate();
+          const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+          coupon.date = formattedDate
+        });
+        resolve(coupons);
+      })
+    },
+    adminAddCoupon:(coupon)=>{
+      return new Promise(async(resolve,reject)=>{
+        coupon.discount = Number(coupon.discount);
+        coupon.date = new Date(coupon.date);
+        coupon.status = true;
+        const newDate = new Date();
+        
+        if(coupon.date < newDate){
+          coupon.status = 'Expired';
+        }
+
+        const couponExist = await db.get().collection(collection.COUPON_COLLECTION).findOne(
+          {
+            code:coupon.code
+          }
+        );
+        if(couponExist){
+          resolve(null)
+        }else{
+          db.get().collection(collection.COUPON_COLLECTION).insertOne(coupon).then(()=>{
+            resolve()
+          })
+        }
+      })
     }
 }

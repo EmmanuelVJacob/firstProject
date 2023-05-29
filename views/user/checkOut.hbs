@@ -135,7 +135,7 @@
         <div style="display: flex; justify-content: end; ">
           <form>
             <input type="text" id="couponCode" placeholder="Promo code" style="width: 9.5rem;">
-            <span onclick="submitCoupon()" class="btn btn-secondary">Redeem</span>
+            <span onclick="submitCoupon()" class="btn btn-secondary" id="couponButton">Redeem</span>
           </form>
 
         </div>
@@ -507,7 +507,8 @@
           document.getElementById('couponName').innerHTML = coupon.code;
           document.getElementById('couponPrice').innerHTML = `Rs.${couponAmt}`;
           document.getElementById('couponCode').value = code;
-          console.log(totalCost, couponAmt)
+        document.getElementById('couponButton').setAttribute('disabled', 'disabled');
+
         }
       } else {
         document.getElementById('invalidCoupon').innerHTML = response.data.status;

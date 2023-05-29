@@ -321,4 +321,40 @@ module.exports = {
         })
     })
 },
+couponApply:(couponCode,userId)=>{
+  return new Promise(async(resolve,reject)=>{
+    const couponExist = await db.get().collection(collection.USER_COLLECTION)
+    .findOne(
+      {
+        _id: new objectId(userId),
+        usedCoupons:couponCode
+      }
+    )
+    const coupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({code:couponCode});
+    if(coupon){
+      if(couponExist){
+        resolve("couponExists")
+      }else{
+        resolve(coupon)
+      }
+    }else{
+      resolve(null)
+    }
+  })
+},
+addToUsedCoupon:(coupon,userId)=>{
+  return new Promise(async(resolve,reject)=>{
+    await db.get().collection(collection.USER_COLLECTION).updateOne(
+      {
+        _id: new objectId(userId)
+      },
+      {
+        $set:{
+          usedCoupons:coupon.code
+        }
+      }
+    ).then(()=>
+    resolve())
+  })
+}
 };

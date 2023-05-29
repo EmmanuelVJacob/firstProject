@@ -2,6 +2,7 @@ var express = require("express");
 const adminController = require("../controllers/adminController");
 var router = express.Router();
 const multer = require("../utils/multer");
+const userHelper = require("../helpers/user-helper");
 
 
 
@@ -100,6 +101,6 @@ router.post(
 );
 router.get('/order',adminController.checkLoggedIn,adminController.adminOrder)
 router.post('/adminOrderStatus/:id',adminController.checkLoggedIn,adminController.adminOrderStatus)
-
-
+router.get('/adminCoupon',adminController.checkLoggedIn,adminController.adminCoupon)
+router.post('/adminAddCoupon',adminController.checkLoggedIn,adminController.adminAddCoupon)
 module.exports = router;

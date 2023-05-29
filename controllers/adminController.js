@@ -22,9 +22,9 @@ module.exports = {
       res.redirect("/admin/login");
     }
   },
-  adminHome: (req, res) => {
-    res.render("admin/adminHome", { admin: true });
-  },
+  // adminHome: (req, res) => {
+  //   res.render("admin/adminHome", { admin: true });
+  // },
   adminLogin: (req, res) => {
     res.render("admin/login", { admin: true });
   },
@@ -394,5 +394,26 @@ module.exports = {
     }).catch(()=>{
       res.redirect('/admin/adminCoupon')
     })
-  }
+  },
+  adminPanel: async (req, res) => {
+
+    const jan = await adminHelper.getMonthCount(1,2023)
+    const feb = await adminHelper.getMonthCount(2,2023)
+    const mar = await adminHelper.getMonthCount(3,2023)
+    const apr = await adminHelper.getMonthCount(4,2023)
+    const may = await adminHelper.getMonthCount(5,2023)
+    const jun = await adminHelper.getMonthCount(6,2023)
+    const userCount =await adminHelper.getUsersCount()
+    const total = await adminHelper.getLastMonthTotal()
+    const totalOrdersPlaced = await productHelpers.totalOrdersPlaced()
+    let totalEarnings = 0;
+    totalEarnings = await adminHelper.getOrderTotalPrice();
+    const deliveredCounts = await adminHelper.getAllDeliveredOrdersCount();
+    const placedCounts = await adminHelper.getAllPlacedOrdersCount();
+    const cancelledCounts = await adminHelper.getAllCanceldOrdersCount();
+    const returnCounts = await adminHelper.getAllReturnOrdersCount();
+    // const topProducts = await adminHelpers.getTopProduct();
+    res.render('admin/adminHome', {admin: true, deliveredCounts , placedCounts, cancelledCounts, returnCounts, userCount, totalOrdersPlaced, total, totalEarnings, jan,feb,mar,apr,may,jun});
+},
+
 };

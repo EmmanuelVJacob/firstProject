@@ -285,7 +285,17 @@ module.exports = {
             resolve([]);
           }
         });
-      }
+      },
+      totalOrdersPlaced:() => {
+        return new Promise (async (resolve, reject) => {
+            try{
+                const orderPlacedCount = await db.get().collection(collection.ORDER_COLLECTION).countDocuments({});
+                resolve(orderPlacedCount);
+            }catch{
+                resolve(0)
+            }
+        })
+      },
       
 }
 

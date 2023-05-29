@@ -507,8 +507,8 @@
           document.getElementById('couponName').innerHTML = coupon.code;
           document.getElementById('couponPrice').innerHTML = `Rs.${couponAmt}`;
           document.getElementById('couponCode').value = code;
-        document.getElementById('couponButton').setAttribute('disabled', 'disabled');
-
+          var button = document.getElementById("couponButton");
+  button.style.display = "none";
         }
       } else {
         document.getElementById('invalidCoupon').innerHTML = response.data.status;

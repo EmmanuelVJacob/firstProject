@@ -388,11 +388,10 @@ module.exports = {
             status:"coupon is already used, try another coupon"  
           })
         }else{
-          userHelper.addToUsedCoupon(coupon,userId).then(()=>{
             res.json({
               status:"success",
               coupon:coupon
-            })
+       
           })
 
         

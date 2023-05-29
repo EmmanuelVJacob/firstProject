@@ -7,7 +7,7 @@ const userHelper = require("../helpers/user-helper");
 
 
 /* GET users listing. */
-router.get("/", adminController.checkLoggedIn, adminController.adminHome);
+router.get("/", adminController.checkLoggedIn, adminController.adminPanel);
 router.post("/", adminController.adminLoginPost);
 router.get("/login", adminController.ifLogged, adminController.adminLogin);
 router.get(

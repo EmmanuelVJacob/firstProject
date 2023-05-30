@@ -416,4 +416,47 @@ module.exports = {
     res.render('admin/adminHome', {admin: true, deliveredCounts , placedCounts, cancelledCounts, returnCounts, userCount, totalOrdersPlaced, total, totalEarnings, jan,feb,mar,apr,may,jun});
 },
 
+adminSalesReport: async (req, res) => {
+  const deliveredOrders = await adminHelper.getAllDeliveredOrders();
+
+  let totalEarnings = 0;
+  totalEarnings = await adminHelper.getOrderTotalPrice();
+
+  deliveredOrders.forEach(eachOrder => {
+      eachOrder.productCount = eachOrder.products.length;
+
+      // date formatting
+      const newDate = new Date(eachOrder.date);
+      const year = newDate.getFullYear();
+      const month = newDate.getMonth() + 1;
+      const day = newDate.getDate();
+      const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+      eachOrder.date = formattedDate;
+    });
+    res.render('admin/adminSalesReport', {admin: true,  deliveredOrders, totalEarnings})
+},
+adminSalesReportFilterPost:(req, res) => {
+  adminHelper.filterDate(req.body.date).then((filteredOrders) => {
+
+      let totalEarnings = 0;
+      if(filteredOrders.length >=1 ){
+          filteredOrders.forEach(eachOrder => {
+              eachOrder.productCount = eachOrder.item.length;
+              totalEarnings += eachOrder.total;
+
+              // date formatting
+              const newDate = new Date(eachOrder.date);
+              const year = newDate.getFullYear();
+              const month = newDate.getMonth() + 1;
+              const day = newDate.getDate();
+              const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+              eachOrder.date = formattedDate;
+          });
+      }else{
+          filteredOrders = false;
+      }
+      res.render('admin/adminSalesReport', {admin: true, deliveredOrders:filteredOrders, totalEarnings});
+  })
+},
+
 };

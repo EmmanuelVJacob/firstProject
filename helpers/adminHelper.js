@@ -396,4 +396,31 @@ module.exports = {
         })
     })
   },
+  filterDate:(dates)=> {
+    return new Promise(async(resolve, reject) => {
+
+        let newDate = [];
+        dates.forEach(eachDate => {
+            const date = new Date(eachDate);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1; // add 1 because months are zero-indexed
+            const day = date.getDate();
+            const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+            newDate.push(formattedDate);
+        });
+
+        const report = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+            {
+                $match: {
+                    status: "Delivered",
+                    date: {
+                        $gte: new Date(newDate[0]),
+                        $lte: new Date(newDate[1])
+                    }
+                }
+            }
+        ]).toArray();
+        resolve(report);
+    })
+  },
 };

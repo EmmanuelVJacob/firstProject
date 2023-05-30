@@ -272,7 +272,8 @@ module.exports = {
       const addressId = req.body.address;
       const userDetails = req.session.user;
       // console.log(userDetails + "user detailes");
-      const total = await cartHelpers.getCartTotal(req.session.user._id);
+      // const total = await cartHelpers.getCartTotal(req.session.user._id);
+      const total = req.body.total;
       const paymentMethod = req.body.paymentMethod;
       const shippingAddress = await userHelper.findAddress(addressId,req.session.user._id);
       const cartItems = await cartHelpers.getCart(req.session.user._id);

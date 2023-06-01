@@ -27,6 +27,7 @@
     "morgan": "~1.9.1",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^2.0.22",
+    "paypal-rest-sdk": "^1.8.1",
     "razorpay": "^2.8.6",
     "routes": "^2.1.0",
     "twilio": "^4.10.0"

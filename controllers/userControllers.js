@@ -10,7 +10,16 @@ const { default: axios } = require('axios');
 const { log } = require("handlebars/runtime");
 const cartHelpers = require("../helpers/cartHelpers");
 const { response } = require("express");
+const paypal=require('paypal-rest-sdk')
 
+const paypal_client_id = process.env.PAYPAL_CLIENT_ID;
+const paypal_client_secret = process.env.PAYPAL_CLIENT_SECRET;
+
+paypal.configure({
+  'mode': 'sandbox', //sandbox or live
+  'client_id': paypal_client_id,
+  'client_secret': paypal_client_secret
+});
 
 module.exports = {
   userSignup: (req, res) => {
@@ -312,6 +321,54 @@ module.exports = {
                 userDetails: userDetails
               })
             })
+            }else{
+              const exchangeRate = 0.013;
+              // console.log(req.body.total+"Total amount!!!!!");
+              const totalCost = (Number(req.body.total)*exchangeRate).toFixed(0);
+              req.session.totalCost = totalCost;
+              const create_payment_json = {
+                intent: "sale",
+                payer: {
+                  payment_method: "paypal",
+                },
+                redirect_urls: {
+                  return_url: "http://localhost:3005/success",
+                  cancel_url: "http://localhost:3005/cancel",
+                },
+                transactions: [
+                  {
+                    amount: {
+                      currency: "USD",
+                      total: `${totalCost}`,
+                    },
+                    description: "TimeZone Watches",
+                  },
+                ],
+              };
+    
+              paypal.payment.create(create_payment_json, function (error, payment) {
+              
+                if (error) {
+                  console.log(error, "ASASASS");
+                  res.render('user/failure', {user:true, userName: req.session.userName});
+                } else if(payment){
+                  try{
+                    userHelper.changeOrderStatus(order.insertedId).then(()=>{console.log("changed")}).catch(()=>{});
+                    // productHelpers.reduceStock(cartList).then(()=>{}).catch((err)=>console.log(err));
+                  }catch(err){
+                    console.log(err);
+                  }finally{
+                    for (let i = 0; i < payment.links.length; i++) {
+                      if (payment.links[i].rel === "approval_url") {
+                        res.json({
+                          approval_link: payment.links[i].href,
+                          status: "success"
+                        })
+                      }
+                    }
+                  }
+                }
+              });
             }
         });
     } catch (err) {
@@ -403,7 +460,50 @@ module.exports = {
         })
       }
     })
-  }
+  },
+
+  paypalSuccess: (req, res)=>{
+    const exchangeRate = 0.013;
+    
+    const totalCost = req.session.totalCost;
+    req.session.totalCost = null;
+    // console.log(totalCost,"vannuuuuuuuuuuuuuuuuu");
+    const payerId = req.query.PayerID;
+    const paymentId = req.query.paymentId;
+    const execute_payment_json = {
+      payer_id: payerId,
+      transactions: [
+        {
+          amount: {
+            currency: "USD",
+            total: `${totalCost}`,
+          },
+        },
+      ],
+    };
+
+    paypal.payment.execute(paymentId, execute_payment_json, (error, payment)=>{
+      console.log(payment,"poyiiiiiiiiiiiiiiiii");
+
+      if (payment) {
+        const userName = req.session.userName;
+        res.render('user/success', {user:req.session.user, payerId, paymentId, userName});
+
+      } else {
+        console.log(error, "asasasasass");
+        const userName = req.session.userName;
+        res.render('user/failure', {user:req.session.user, userName});
+      
+      }
+    });
+  },
+
+
+  failure:(req, res) => {
+    console.log('emmanuyel failed');
+    res.render('user/failure', {user: true,user:req.session.user, userName: req.session.userName});
+  },
+
   }
 
 

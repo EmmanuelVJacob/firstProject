@@ -44,4 +44,6 @@ router.get('/categoryFilter/:name',userControllers.getCategoryWiseProducts)
 
 router.post('/verifyPayment',userControllers.checkLoggedIn,userControllers.verifyPayment)
 router.post('/couponApply',userControllers.checkLoggedIn,userControllers.couponApply)
+router.get('/success',userControllers.checkLoggedIn,userControllers.paypalSuccess)
+router.get('/cancel',userControllers.checkLoggedIn,userControllers.failure)
 module.exports = router;

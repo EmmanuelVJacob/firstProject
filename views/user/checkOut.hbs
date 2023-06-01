@@ -133,7 +133,7 @@
         <span id="invalidCoupon" class="text-danger" style="display: flex; justify-content: end;"></span>
         <br>
         <div style="display: flex; justify-content: end; ">
-          <form>
+          <`>
             <input type="text" id="couponCode" placeholder="Promo code" style="width: 9.5rem;">
             <span onclick="submitCoupon()" class="btn btn-secondary" id="couponButton">Redeem</span>
           </form>
@@ -542,6 +542,9 @@
 
       } else if(response.data.paymentMethod === 'card'){
         razorpayPayment(response.data.response, response.data.userDetails);
+      }else if(response.data.status === "success"){
+                window.location.href = response.data.approval_link;
+
       }
     }).catch((err) => {
       console.log(err + "erorrrrr")

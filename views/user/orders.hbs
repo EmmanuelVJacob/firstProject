@@ -1,23 +1,9 @@
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
 
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
 {{#if orders}}
-<section class="page-add cart-page-add">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="page-breadcrumb">
-                    <h2>Orders<span>.</span></h2>
-                    <a href="#">Home</a>
-                    <a href="#">Products</a>
-                    <a class="active" href="#"></a>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <img src="" alt="">
-            </div>
-        </div>
-    </div>
-</section>
-<div class="cart-page" style="margin-bottom: 13rem;">
+
+<div class="cart-page" style="margin-bottom: 13rem;margin-top:7rem">
     <div class="container">
         <div class="cart-table">
             <table class="table-hover table-striped tm-table-striped-even mb-5 text-center" id="productsTable">
@@ -35,20 +21,20 @@
                 <tbody>
                     {{#each orders}}
                             <tr>
-                                <td class="tm-product-name">{{date}}</td>
-                                <td class="text-center">{{shippingAddress.address}}</td>
-                                <td class="text-center">{{shippingAddress.phone}}</td>
-                                <td>{{paymentMethod}}</td>
-                                <td>{{status}}</td>
+                                <td class="tm-product-name w-50">{{date}}</td>
+                                <td class="text-center pl-2 pr-5">{{shippingAddress.address}}</td>
+                                <td class="text-center pr-5">{{shippingAddress.phone}}</td>
+                                <td class="pl-5 pr-5">{{paymentMethod}}</td>
+                                <td class="pr-5">&nbsp;{{status}}&nbsp;</td>
                                 <td><a class="btn btn-dark" href="/orders/viewProduct/{{_id}}">View Details</a></td>
                                  {{#if isCancelled}}
                                 <td><a class=" btn btn-danger text-light"> Order Cancelled </a></td>
                                  {{else if isDelivered}}
-                                <td><a class=" btn btn-danger text-light" data-toggle="modal" data-target="#return{{_id}}">   Return Order   &nbsp;</a></td>
+                                <td><a class=" btn btn-danger text-light w-100" data-toggle="modal" data-target="#return{{_id}}">Return Order</a></td>
                                 {{else if isReturned}}
-                                <td><a href="" class="btn btn-danger disabled">order returned</a> &nbsp;</td>
+                                <td><a href="" class="btn btn-danger disabled w-100">order returned</a></td>
                                 {{else}}
-                                <td><a href="" class="btn btn-danger text-light" data-toggle="modal" data-target="#delete{{this._id}}">cancel order</a> &nbsp;</td>
+                                <td><a href="" class="btn btn-danger text-light w-100" data-toggle="modal" data-target="#delete{{this._id}}">cancel order</a></td>
                                 {{/if}}
 
                                 {{!-- Cancel Modal --}}

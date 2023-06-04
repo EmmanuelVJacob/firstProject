@@ -74,6 +74,16 @@ router.get(
   adminController.checkLoggedIn,
   adminController.deleteProduct
 )
+router.get(
+  "/unlistProduct/:id",
+  adminController.checkLoggedIn,
+  adminController.unlistProduct
+)
+router.get(
+  "/listProduct/:id",
+  adminController.checkLoggedIn,
+  adminController.listProduct
+)
 router.get('/categoryPage',
 adminController.checkLoggedIn,
 adminController.categoryPage)
@@ -109,6 +119,9 @@ router.get('/order',adminController.checkLoggedIn,adminController.adminOrder)
 router.post('/adminOrderStatus/:id',adminController.checkLoggedIn,adminController.adminOrderStatus)
 router.get('/adminCoupon',adminController.checkLoggedIn,adminController.adminCoupon)
 router.post('/adminAddCoupon',adminController.checkLoggedIn,adminController.adminAddCoupon)
+router.post('/adminEditCoupon/:id',adminController.checkLoggedIn,adminController.adminEditCoupon)
+router.get('/adminDeactivate/:id',adminController.checkLoggedIn,adminController.adminDeactivate)
+router.get('/adminActivate/:id',adminController.checkLoggedIn,adminController.adminActivate)
 router.get('/adminSalesReport',adminController.checkLoggedIn,adminController.adminSalesReport)
 router.post('/adminSalesReportFilter',adminController.checkLoggedIn,adminController.adminSalesReportFilterPost)
 

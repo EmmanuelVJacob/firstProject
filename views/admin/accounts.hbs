@@ -1,4 +1,4 @@
-<section>
+
   <div class="container">
       <div class="row">
     <form
@@ -20,13 +20,14 @@
 
     </form>
   </div>
-  <div class="row">
-    <div class="row mt-4">
-      <a href="/admin/addUser" class="btn btn-success ml-auto">
+ 
+    <div class="row mb-5">
+      <a onclick="addUser(event)" href="/admin/addUser" class="btn btn-success ml-auto">
         add user</a>
 
     </div>
-    <table class="table mt-5">
+    <div class="bg-white p-5">
+ <table class="table table-hover table-striped tm-table-striped-even mt-3 mb-4" id="productsTable">
       <thead class="thead-dark">
         <tr>
           <th scope="col">Name</th>
@@ -46,18 +47,18 @@
             <td >{{this.mobile}}</td>
             <td ><a
                 class="btn btn-danger"
-                href="/admin/deleteUser/{{this._id}}"
-                onclick="return confirm('are you sure you want to delete {{this.name}}')"
+               
+                onclick="deleteUser(event, '{{this._id}}')"
               >
                 <i class="far fa-trash-alt tm-product-delete-icon"></i>
               </a></td>
               
                 <td>
-                  <a href="/admin/Block/{{this._id}}">
+                  <a  onclick="blockUser(event, '{{this._id}}')" >
                     {{#if status}}
                   <i class="fas fa-toggle-on text-success"></i>
                   {{else}}
-                 <a href="/admin/UnBlock/{{this._id}}">
+                 <a  onclick="UnBlockUser(event, '{{this._id}}')">
                   <i class="fas fa-toggle-off text-danger"></i></a>
                   {{/if}}
                 
@@ -73,5 +74,101 @@
         {{/each}}
       </tbody>
     </table>
-  </div>
-</section>
+    </div>
+   
+
+
+
+
+<script>
+  function addUser(event) {
+     event.preventDefault()
+  
+     swal({
+       title: "Do you really want to add the User?",
+       icon: "warning",
+       buttons: {
+         cancel: "Cancel",
+         confirm: "OK"
+        },
+      }).then(function (confirmed) {
+       
+        console.log(event.target.getAttribute("href"),'kkjhjhk');
+        if (confirmed) {
+    
+      window.location.href = "/admin/addUser"; 
+    }
+  });
+}
+
+
+ function deleteUser(event,id) {
+     event.preventDefault()
+  
+     swal({
+       title: "Do you really want to delete the User?",
+       icon: "warning",
+       buttons: {
+         cancel: "Cancel",
+         confirm: "OK"
+        },
+      }).then(function (confirmed) {
+       
+        console.log(event.target.getAttribute("href"),'kkjhjhk');
+        if (confirmed) {
+    
+      window.location.href = "/admin/deleteUser/"+id; 
+    }
+  });
+}
+
+
+function blockUser(event,id) {
+     event.preventDefault()
+  
+     swal({
+       title: "Do you really want to block the User?",
+       icon: "warning",
+       buttons: {
+         cancel: "Cancel",
+         confirm: "OK"
+        },
+      }).then(function (confirmed) {
+       
+        console.log(event.target.getAttribute("href"),'kkjhjhk');
+        if (confirmed) {
+    
+      window.location.href = "/admin/Block/"+id; 
+    }
+  });
+}
+
+
+
+function UnBlockUser(event,id) {
+     event.preventDefault()
+  
+     swal({
+       title: "Do you really want to Unblock the User?",
+       icon: "warning",
+       buttons: {
+         cancel: "Cancel",
+         confirm: "OK"
+        },
+      }).then(function (confirmed) {
+       
+        console.log(event.target.getAttribute("href"),'kkjhjhk');
+        if (confirmed) {
+    
+      window.location.href = "/admin/UnBlock/"+id; 
+    }
+  });
+}
+
+</script>
+
+<script>
+  $(function () {
+    $('#productsTable').DataTable();
+  });
+</script>

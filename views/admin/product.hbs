@@ -1,3 +1,11 @@
+<style>
+  .strikethrough {
+    text-decoration: line-through;
+    color: rgb(198, 37, 37);
+  }
+</style>
+
+
 <div
   class="container d-flex flex-row justify-content-around align-items-center"
 >
@@ -28,7 +36,8 @@
 
   </div>
   <div class="row">
-    <a href="/admin/getProdCategoryToAddProduct">
+    <a onclick="addProduct(event)">
+    
       <button
         type="button"
         class="btn btn-primary mt-3 bg-warning rounded"
@@ -45,40 +54,14 @@
 
 <!-- Button trigger modal -->
 
-<link
-  rel="stylesheet"
-  href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css"
-/>
 
-<script
-  src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"
-></script>
 
-<style>
-  .table-striped { background-image: linear-gradient(45deg, rgba(255, 255, 255,
-  0.2) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.2) 75%,
-  rgba(255, 255, 255, 0.2)), linear-gradient(45deg, rgba(255, 255, 255, 0.2)
-  25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.2) 75%, rgba(255,
-  255, 255, 0.2)); background-size: 20px 20px; background-position: 0 0, 10px
-  10px; }
-</style>
 
-<div class="row tm-content-row m-2 ml-5">
-  <div class="col-sm-12 col-md-12 col-lg-9 col-xl-9 tm-block-col ml-5  bg-white text-dark">
-    {{! <!-- <div class="tm-bg-primary-dark tm-block tm-block-products"> -->
-    <!-- <form action="/admin/searchProduct" method="post">
-            <div class="mt-1 input-group">
-              <div class="form-outline">
-                <input type="search" name="name" id="form1" class="form-control" />
-              </div>
-              <button type="submit" class="btn btn-primary">Search</button>
-              <a class="ml-5 btn btn-primary" href="/admin/product">Show All Products</a>
-            </div>
-            </form> -->
-    <!-- <div class="tm-product-table-container"> --> }}
+<div class="bg-white p-4 mt-3">
+
     <table
       id="myTable"
-      class="table table-hover tm-table-small tm-product-table" 
+      class="table table-hover table-striped tm-table-striped-even mt-3" 
     >
       <thead>
         <tr>
@@ -103,59 +86,75 @@
                 <td>{{this.category}}</td>
                 <td>{{this.stock}}</td>
                 <td>{{this.price}}</td>
-                <td>nothing</td>
-
+ <td>
+                  <a  onclick="unlistProduct(event, '{{this._id}}')" >
+                    {{#if listed}}
+                  <i class="fas fa-toggle-on text-success"></i>
+                  {{else}}
+                 <a  onclick="listProduct(event, '{{this._id}}')">
+                  <i class="fas fa-toggle-off text-danger"></i></a>
+                  {{/if}}
+                
+                
+                </td>
                 <td class="text-success">{{this.listed}}</td>
 
                 <td>.</td>
                 <td>
-                  <a
-                    href="/admin/editProductPage/{{this._id}}"
+                  <a onclick="confirmEdit(event, '{{this._id}}')"
+                    {{!-- href="/admin/editProductPage/{{this._id}}" --}}
                     class="tm-product-delete-link"
                   >
                     <i class="fas fa-edit"></i>
                   </a>
                 </td>
-                <td>
-                  <a
-                    href="/admin/deleteProduct/{{this._id}}"
-                    class="tm-product-delete-link"
-                  >
-                    <i class="far fa-trash-alt tm-product-delete-icon"></i>
-                  </a>
-                </td>
+                <td class="bg-white">
+  <a onclick="confirmDelete(event, '{{this._id}}')"
+    class="tm-product-delete-link"
+  >
+    <i class="far fa-trash-alt tm-product-delete-icon"></i>
+  </a>
+</td>
 
               </tr>
             {{else}}
               <tr>
-                <td>{{this.name}}</td>
-                <td>{{this.description}}</td>
-                <td>{{this.category}}</td>
+                <td class="strikethrough">{{this.name}}</td>
+                <td class="strikethrough">{{this.description}}</td>
+                <td class="strikethrough">{{this.category}}</td>
                 <td class="text-danger"><span>
                     {{this.stock}}
                   </span></td>
                 <td>{{this.price}}</td>
-                <td>nothing</td>
-
+ <td>
+                  <a  onclick="unlistProduct(event, '{{this._id}}')" >
+                    {{#if listed}}
+                  <i class="fas fa-toggle-on text-success"></i>
+                  {{else}}
+                 <a  onclick="listProduct(event, '{{this._id}}')">
+                  <i class="fas fa-toggle-off text-danger"></i></a>
+                  {{/if}}
+                
+                
+                </td>
                 <td class="text-danger"><span>
                     {{this.listed}}
                   </span></td>
 
                 <td>.</td>
                 <td>
-                  <a
+                  <a onclick="confirmEdit(event, '{{this._id}}')"
                     href="/admin/editProductPage/{{this._id}}"
                     class="tm-product-delete-link"
                   >
                     <i class="fas fa-edit"></i>
                   </a>
                 </td>
-                <td>
+                <td class="bg-white">
                   <a
-                    href="/admin/deleteProduct/{{this._id}}"
                     class="tm-product-delete-link"
                   >
-                    <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                    <i class="far fa-trash-alt tm-product-delete-icon text-danger"></i>
                   </a>
                 </td>
 
@@ -165,5 +164,118 @@
         {{/if}}
       </tbody>
     </table>
-  </div>
 </div>
+
+
+
+<script>
+   function confirmDelete(event,id) {
+     event.preventDefault()
+  
+     swal({
+       title: "Do you really want to delete the product?",
+       icon: "warning",
+       buttons: {
+         cancel: "Cancel",
+         confirm: "OK"
+        },
+      }).then(function (confirmed) {
+       
+        console.log(event.target.getAttribute("href"),'kkjhjhk');
+        if (confirmed) {
+    
+      window.location.href = "/admin/deleteProduct/"+id; 
+    }
+  });
+}
+
+function confirmEdit(event,id) {
+     event.preventDefault()
+  
+     swal({
+       title: "Do you really want to Edit the product?",
+       icon: "warning",
+       buttons: {
+         cancel: "Cancel",
+         confirm: "OK"
+        },
+      }).then(function (confirmed) {
+       
+        console.log(event.target.getAttribute("href"),'kkjhjhk');
+        if (confirmed) {
+    
+      window.location.href = "/admin/editProductPage/"+id; 
+    }
+  });
+}
+
+
+function addProduct(event) {
+     event.preventDefault()
+  
+     swal({
+       title: "Do you really want to add the product?",
+       icon: "warning",
+       buttons: {
+         cancel: "Cancel",
+         confirm: "OK"
+        },
+      }).then(function (confirmed) {
+       
+        console.log(event.target.getAttribute("href"),'kkjhjhk');
+        if (confirmed) {
+    
+      window.location.href = "/admin/getProdCategoryToAddProduct"; 
+    }
+  });
+}
+</script>
+<script>
+  $(function () { $('#myTable').DataTable(); });
+
+
+
+
+function unlistProduct(event,id) {
+     event.preventDefault()
+  
+     swal({
+       title: "Do you really want to Unlist the Product?",
+       icon: "warning",
+       buttons: {
+         cancel: "Cancel",
+         confirm: "OK"
+        },
+      }).then(function (confirmed) {
+       
+        console.log(event.target.getAttribute("href"),'kkjhjhk');
+        if (confirmed) {
+    
+      window.location.href = "/admin/unlistProduct/"+id; 
+    }
+  });
+}
+
+
+
+function listProduct(event,id) {
+     event.preventDefault()
+  
+     swal({
+       title: "Do you really want to list the Product?",
+       icon: "warning",
+       buttons: {
+         cancel: "Cancel",
+         confirm: "OK"
+        },
+      }).then(function (confirmed) {
+       
+        console.log(event.target.getAttribute("href"),'kkjhjhk');
+        if (confirmed) {
+    
+      window.location.href = "/admin/listProduct/"+id; 
+    }
+  });
+}
+
+</script>

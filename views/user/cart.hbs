@@ -34,11 +34,13 @@
                       <h5>₹ {{this.product.price}}</h5>
                     </td>
                     <td>
-    <button class="cart-item-count mr-4 bg-dark" id="decrement_{{product.productId._id}}"
-       onclick="changeQuantity('{{this.product._id}}', -1,'{{this.product.price}}')">&nbsp;-&nbsp;</button>
-    {{!-- <span id="quantity_{{product.productId._id}}" name="quantity">{{product.quantity}}</span> --}}
-    <button class="cart-item-count mr-4 bg-dark" id="increment_{{product.productId._id}}"
-            onclick="changeQuantity('{{this.product._id}}', 1,'{{this.product.price}}')">&nbsp;+&nbsp;</button>
+    <div class="btn mr-4 bg-dark" id="decrement_{{product.productId._id}}"
+       onclick="changeQuantity('{{this.product._id}}', -1,'{{this.product.price}}')">&nbsp;-&nbsp;</div>
+<input type="text" name="quantity"  id="{{this.product._id}}"
+                                    class="quantity form-control" value=" {{this.quantity}}" min="1"
+                                    max="{{this.product.stock}}" style="max-width: 74px;">
+    <div class="btn mr-4 bg-dark" id="increment_{{product.productId._id}}"
+            onclick="changeQuantity('{{this.product._id}}', 1,'{{this.product.price}}')">&nbsp;+&nbsp;</div>
 </td>
 
                     <td>
@@ -49,9 +51,9 @@
                                         onclick="changeQuantity('{{this.product._id}}', -1,'{{this.product.price}}')"
                                         style="color: rgb(0, 0, 0);border-color: rgb(192, 192, 192);">&nbsp;-&nbsp;</span> --}}
                                 </div>
-                                <input type="text" name="quantity"  id="{{this.product._id}}"
+                                {{!-- <input type="text" name="quantity"  id="{{this.product._id}}"
                                     class="quantity form-control input-number  mt-2" value=" {{this.quantity}}" min="1"
-                                    max="{{this.product.stock}}" style="max-width: 50px;">
+                                    max="{{this.product.stock}}" style="max-width: 50px;"> --}}
                                 <div class="mb-0"> 
                                     {{!-- <span class="btn btn-dark bg-transparent ml-2 text-center mt-2"
                                         onclick="changeQuantity('{{this.product._id}}', 1,'{{this.product.price}}')"
@@ -75,18 +77,7 @@
          
     {{/each}}
              {{/if}}
-                  <tr class="bottom_button">
-                    <td>
-                      <a class="btn_1" href="#">Update Cart</a>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                      <div class="cupon_text float-right">
-                        <a class="btn_1" href="#">Close Coupon</a>
-                      </div>
-                    </td>
-                  </tr>
+                  
                   <tr>
                     <td></td>
                     <td></td>
@@ -134,10 +125,47 @@
             method: 'post',
             success: (response) => {
                 if (response.removeProduct) {
-                    alert("Product removed from cart")
-                document.getElementById(`parent_${productId}`).remove()
-                    
-                } else {
+                    swal({
+    title: "Are you sure?",
+    text: "Once deleted, you will not be able to recover this file!",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then(async (willDelete) => {
+    if (willDelete) {
+      swal("Poof! Your file has been deleted!", {
+        icon: "success",
+      });
+
+      try {
+        const res = await axios({
+          method: 'GET',
+          url: `/deleteCart/${productId}`
+        });
+
+        if (res.data.status === "success") {
+         
+          document.getElementById(`parent_${productId}`).remove();
+
+          Toastify({
+            text: res.data.message,
+            duration: 3000,
+            gravity: "bottom",
+            position: "center",
+            style: {
+              background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+            },
+          }).showToast();
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      swal("Your file is safe!");
+      return; // Return if deletion is canceled
+    }
+  });
+    } else {
                     document.getElementById(productId).value = quantity + count
                     document.getElementById('total').innerHTML =('₹ '+ response.total)
                     document.getElementById(`${productId}stocks`).innerHTML = stocksValue-(count);
@@ -163,37 +191,48 @@
     }
 
 
-  
-    async function deleteProduct(productId){
-      
-		const res = await axios({
-			method: 'GET', 
-            url: `/deleteCart/${productId}`
-		});
-		try{
-			if(res.data.status === "success"){
-	
-    alert("Product removed from cart")   
+  async function deleteProduct(productId) {
+  swal({
+    title: "Are you sure?",
+    text: "Once deleted, you will not be able to recover this file!",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then(async (willDelete) => {
+    if (willDelete) {
+      swal("Poof! Your file has been deleted!", {
+        icon: "success",
+      });
 
-     document.getElementById(`parent_${productId}`).remove()
-		;
-			}else{
-				Toastify({
-					text: res.data.message,
-					duration: 3000,
-					gravity: "bottom",
-					position: "center",
-					style: {
-						background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
-					},
-				}).showToast();
-				location.assign('/login')
-			}
-		}catch(err){
-			console.log(err);
-		}
-	}
-     
+      try {
+        const res = await axios({
+          method: 'GET',
+          url: `/deleteCart/${productId}`
+        });
+
+        if (res.data.status === "success") {
+         
+          document.getElementById(`parent_${productId}`).remove();
+
+          Toastify({
+            text: res.data.message,
+            duration: 3000,
+            gravity: "bottom",
+            position: "center",
+            style: {
+              background: "linear-gradient(109.6deg, rgba(0, 0, 0, 0.93) 11.2%, rgb(63, 61, 61) 78.9%)",
+            },
+          }).showToast();
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      swal("Your file is safe!");
+      return; // Return if deletion is canceled
+    }
+  });
+}
 
       </script>
 

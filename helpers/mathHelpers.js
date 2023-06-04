@@ -26,5 +26,9 @@ module.exports = {
             console.log(result+"kajshdihagsjgdfasdfuagsd");
             return result;
         
+    },
+    increment:(num1)=>{
+        const result = num1 +1;
+        return result;
     }
 }

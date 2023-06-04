@@ -181,6 +181,48 @@ module.exports = {
             })
         })
       },
+      unlistProducts: (productId) => {
+        return new Promise((resolve, reject) => {
+          db.get().collection(collection.PRODUCT_COLLECTION).updateOne(
+            {
+              _id: new ObjectId(productId)
+            },
+            {
+              $set: {
+                listed: false,
+               
+              }
+            }
+          )
+            .then((response) => {
+              resolve()
+            })
+            .catch((err) => {
+              reject()
+            })
+        })
+      },
+      listProducts: (productId) => {
+        return new Promise((resolve, reject) => {
+          db.get().collection(collection.PRODUCT_COLLECTION).updateOne(
+            {
+              _id: new ObjectId(productId)
+            },
+            {
+              $set: {
+                listed: true,
+               
+              }
+            }
+          )
+            .then((response) => {
+              resolve()
+            })
+            .catch((err) => {
+              reject()
+            })
+        })
+      },
       deleteProductCategory: (cateId) => {
         return new Promise((resolve, reject) => {
           db.get()

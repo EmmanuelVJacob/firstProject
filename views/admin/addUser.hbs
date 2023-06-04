@@ -1,5 +1,5 @@
 <div class="container pt-5 w-75 text-center">
-  <form class="row contact_form" action="/admin/addUser" method="post">
+  <form class="row bg-secondary pt-3 contact_form" id="myForm" action="/admin/addUser" method="post">
     <div class="col-md-12 form-field p_star">
       <input type="text" class="form-control validate" id="name" name="name" value="" placeholder="Username" required="required" />
     </div>
@@ -10,7 +10,7 @@
       <input type="password" class="form-control validate" id="rePassword" name="rePassword" value="" placeholder="Confirm Password" required />
     </div>
     <div class="col-md-12 form-field p_star">
-      <input type="email" class="form-control validate" name="email" id="exampleInputEmail1" value="" placeholder="Enter email" required />
+      <input type="email" class="form-control validate" name="email"  value="" placeholder="Enter email" required />
     </div>
     <div class="col-md-12 form-field p_star">
       <input type="number" class="form-control validate" id="number" name="mobile" value="" placeholder="Phone Number" required />
@@ -18,10 +18,70 @@
     <div class="col-md-12 form-group">
       <div class="creat_account d-flex align-items-center">
       </div>
-      <button type="submit" value="submit" class="btn_3 btn-success">Add User</button>
+      <button type="submit" value="submit" onclick="confirmSubmit(event)" class="btn_3 btn-success">Add User</button>
       {{#if errMsg}}
       <div id="msg" class="alert alert-danger ml-4">{{errMsg}}</div>
       {{/if}}
     </div>
   </form>
 </div>
+
+
+<script>
+  function confirmSubmit(event) {
+  event.preventDefault();
+
+  var form = document.getElementById('myForm');
+  var requiredInputs = form.querySelectorAll('input[required]');
+  var isFormValid = true;
+
+  for (var i = 0; i < requiredInputs.length; i++) {
+    if (requiredInputs[i].value === '') {
+      isFormValid = false;
+      break;
+    }
+  }
+
+  if (isFormValid) {
+    var emailInput = form.querySelector('input[type="email"]');
+    if (!validateEmail(emailInput.value)) {
+      swal("Invalid email format.", "", "error");
+      return;
+    }
+
+    var phoneInput = form.querySelector('input[type="number"]');
+    if (!validatePhoneNumber(phoneInput.value)) {
+      swal("Invalid phone number format.", "", "error");
+      return;
+    }
+
+    swal({
+      title: "Are you sure you want to submit the form?",
+      icon: "warning",
+      buttons: {
+        cancel: "Cancel",
+        confirm: "OK"
+      },
+    }).then(function (confirmed) {
+      if (confirmed) {
+        form.submit();
+      }
+    });
+  } else {
+    swal("Please fill in all the required fields.", "", "error");
+  }
+}
+
+function validateEmail(email) {
+  // Email regex pattern for basic email format validation
+  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailPattern.test(email);
+}
+
+function validatePhoneNumber(phoneNumber) {
+  // Phone number regex pattern for basic phone number format validation
+  var phonePattern = /^[0-9]{10}$/;
+  return phonePattern.test(phoneNumber);
+}
+
+</script>

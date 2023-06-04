@@ -61,3 +61,14 @@
         </div>
     </div>
 
+<script>
+  $(function () {
+    $('#productsTable').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });
+  });
+</script>
+

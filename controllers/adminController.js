@@ -302,9 +302,30 @@ module.exports = {
   },
   deleteProduct: (req, res) => {
     const productId = req.params.id;
-    console.log(productHelpers);
     productHelpers
       .deleteProducts(productId)
+      .then(() => {
+        res.redirect("back");
+      })
+      .catch(() => {
+        res.redirect("back");
+      });
+  },
+  unlistProduct: (req, res) => {
+    const productId = req.params.id;
+    productHelpers
+      .unlistProducts(productId)
+      .then(() => {
+        res.redirect("back");
+      })
+      .catch(() => {
+        res.redirect("back");
+      });
+  },
+  listProduct: (req, res) => {
+    const productId = req.params.id;
+    productHelpers
+      .listProducts(productId)
       .then(() => {
         res.redirect("back");
       })
@@ -383,7 +404,6 @@ module.exports = {
   },
   adminCoupon:async(req,res)=>{
     const coupons = await adminHelper.getCoupon();
-    console.log(coupons,'emman');
     coupons.forEach(coupon => {
       coupon.deactivate = coupon.status === 'Deactivated'?true:false;
       coupon.expired = coupon.status === 'Expired'?true:false;
@@ -397,6 +417,28 @@ module.exports = {
       res.redirect('/admin/adminCoupon')
     })
   },
+  adminEditCoupon:(req, res)=> {
+    const couponId = req.params.id; 
+    adminHelper.adminEditCoupon(couponId, req.body).then(()=> {
+        res.redirect('/admin/adminCoupon')
+    })
+},
+  adminDeactivate:(req, res)=> {
+    const couponId = req.params.id;
+    adminHelper.deactivateoCupon(couponId).then(()=> {
+        res.redirect('/admin/adminCoupon')
+    }).catch(()=> {
+        res.redirect('/admin/adminCoupon')
+    })
+},
+adminActivate:(req, res)=> {
+  const couponId = req.params.id;
+  adminHelper.activateCoupon(couponId).then(()=> {
+      res.redirect('/admin/adminCoupon')
+  }).catch(()=> {
+      res.redirect('/admin/adminCoupon');
+  })
+},
   adminPanel: async (req, res) => {
 
     const jan = await adminHelper.getMonthCount(1,2023)

@@ -254,7 +254,12 @@ module.exports = {
       getProducts: (currentPage) => {
         return new Promise(async (resolve, reject) => {
           currentPage = parseInt(currentPage);
-          const productData = await db.get().collection(collection.PRODUCT_COLLECTION).find({listed:true}).toArray();
+          const limit = 3;
+          const skip = (currentPage-1)*limit;
+          console.log(currentPage,'current');
+          console.log(limit,'linim');
+          console.log(skip,'skip');
+          const productData = await db.get().collection(collection.PRODUCT_COLLECTION).find({listed:true}).skip(skip).limit(limit).toArray();
           if (productData) {
             resolve(productData);
           } else {
@@ -262,6 +267,23 @@ module.exports = {
           }         
         })
       },
+      totalPages:()=> {
+        return new Promise(async (resolve, reject) => {
+            const products = await db.get().collection(collection.PRODUCT_COLLECTION).find({listed:true}).toArray()
+            const totalCount = products.length
+            resolve(totalCount);
+        })
+      },
+      totalcategoryproducts:()=> {
+        return new Promise(async (resolve, reject) => {
+            const products = await db.get().collection(collection.PRODUCT_COLLECTION).find({ listed: true, category:CategoryID }).toArray()
+            const totalCount = products.length
+            resolve(totalCount);
+        })
+      },
+      
+      
+
 
       addProductImage: (id, imgUrls) => {
         return new Promise((resolve, reject) => {
@@ -317,10 +339,13 @@ module.exports = {
           }
         })
       },
-      getCategoryWiseProducts: (CategoryID) => {
+      getCategoryWiseProducts: (CategoryID,currentPage) => {
         console.log(CategoryID);
         return new Promise(async (resolve, reject) => {
-          const productData = await db.get().collection(collection.PRODUCT_COLLECTION).find({ listed: true, category:CategoryID }).toArray();
+          currentPage = parseInt(currentPage);
+          const limit = 3;
+          const skip = (currentPage-1)*limit;
+          const productData = await db.get().collection(collection.PRODUCT_COLLECTION).find({ listed: true, category:CategoryID }).skip(skip).limit(limit).toArray();
           if (productData.length > 0) {
             resolve(productData);
           } else {

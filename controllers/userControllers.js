@@ -216,12 +216,22 @@ module.exports = {
     }
   },
   shopPage: async(req, res) => {
-    let productData= await productHelpers.getProducts()
+    const totalProducts = await productHelpers.totalPages();
+    const currentPage = req.query.page || 1;
+    let productData= await productHelpers.getProducts(currentPage)
     let category = await productHelpers.getProductCategory()
+    totalPages = Math.ceil(totalProducts/3)
+    console.log(totalPages,'sdfosidfoiwedfoiwhdfoihoiwdfoiwdfui');
+    console.log(currentPage,'skfhksdfhfkjsdhf');
+    let arr = []
+    for (let i = 1;i<=totalPages;i++){
+      arr.push(i)
+    }
+    console.log(arr,'arra');
     if (req.session.user) {
-      res.render('user/shop', {user:req.session.user, userName:req.session.userName,productData,category});
+      res.render('user/shop', {user:req.session.user, userName:req.session.userName,productData,category,totalPages,currentPage,arr});
     } else {
-      res.render("user/shop",{productData,category});
+      res.render("user/shop",{productData,category,totalPages,currentPage,arr});
     }
   },
   deleteCart: (req, res) => {
@@ -414,14 +424,20 @@ module.exports = {
     })
   },
   getCategoryWiseProducts: async(req, res) => {
-    CategoryID = req.params.name
-    console.log(CategoryID);
-    let productData= await productHelpers.getCategoryWiseProducts(CategoryID)
+    CategoryID = req.params.name 
+    const totalProducts = await productHelpers.totalcategoryproducts();
+    const currentPage = req.query.page || 1;
+    const arr = []
+    totalPages = Math.ceil(totalProducts/3)
+    for (let i = 1;i<=totalPages;i++){
+      arr.push(i)
+    }
+    let productData= await productHelpers.getCategoryWiseProducts(CategoryID,currentPage)
     let category = await productHelpers.getProductCategory()
     if (req.session.user) {
-      res.render('user/shop', {user:req.session.user, userName:req.session.userName,productData,category});
+      res.render('user/shop', {user:req.session.user, userName:req.session.userName,productData,category,arr,currentPage});
     } else {
-      res.render("user/shop",{productData,category});
+      res.render("user/shop",{productData,category,arr,currentPage});
     }
   },
   verifyPayment:(req,res)=>{

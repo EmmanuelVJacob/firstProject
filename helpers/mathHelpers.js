@@ -30,5 +30,6 @@ module.exports = {
     increment:(num1)=>{
         const result = num1 +1;
         return result;
-    }
+    },
+
 }

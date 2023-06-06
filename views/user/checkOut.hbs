@@ -133,7 +133,7 @@
         <span id="invalidCoupon" class="text-danger" style="display: flex; justify-content: end;"></span>
         <br>
         <div style="display: flex; justify-content: end; ">
-          <`>
+
             <input type="text" id="couponCode" placeholder="Promo code" style="width: 9.5rem;">
             <span onclick="submitCoupon()" class="btn btn-secondary" id="couponButton">Redeem</span>
           </form>
@@ -217,23 +217,23 @@
           </div>
       </div>
       <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-12"> 
           <div class="payment-method">
             <h3>Payment</h3>
             <div class="custom custom-radio">
               <label for="paypal">Paypal<img class="ml-4 mr-4" src="img/paypal.jpg" alt=""></label>
               <input type="radio" id="paypal" name="paymentMethod" onclick="validateSubmit()"
-                class="custom-control-label" value="paypal" required>
+                value="paypal" required>
             </div>
 
             <div class="custom custom-radio"><label for="card">Credit / Debit card <img class="ml-4 mr-4" src=""
                   alt=""></label>
-              <input type="radio" id="card" name="paymentMethod" class="custom-control-label" onclick="validateSubmit()"
+              <input type="radio" id="card" name="paymentMethod"  onclick="validateSubmit()"
                 value="card" required>
             </div>
             <div class="custom custom-radio">
               <label for="COD">Pay when you get the package</label>
-              <input type="radio" id="COD" name="paymentMethod" class="custom-control-label" onclick="validateSubmit()"
+              <input type="radio" id="COD" name="paymentMethod"  onclick="validateSubmit()"
                 value="COD" required>
             </div>
             <button id="checkoutBtn" disabled class="btn btn-dark btn-lg btn-block mt-3" type="submit">Place your

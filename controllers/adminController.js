@@ -1,5 +1,5 @@
 const adminHelper = require("../helpers/adminHelper");
-const userHelper = require("../helpers/user-helper");
+const userHelper = require("../helpers/userHelper");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceSID = process.env.TWILIO_SERVICE_SID;

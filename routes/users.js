@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var userHelper = require("../helpers/user-helper");
+var userHelper = require("../helpers/userHelper");
 var userControllers = require("../controllers/userControllers");
 
 /* GET home page. */

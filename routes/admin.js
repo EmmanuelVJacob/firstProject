@@ -2,7 +2,7 @@ var express = require("express");
 const adminController = require("../controllers/adminController");
 var router = express.Router();
 const multer = require("../utils/multer");
-const userHelper = require("../helpers/user-helper");
+const userHelper = require("../helpers/userHelper");
 const userControllers = require("../controllers/userControllers");
 
 

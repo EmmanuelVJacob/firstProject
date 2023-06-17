@@ -1,4 +1,4 @@
-var userHelper = require("../helpers/user-helper");
+var userHelper = require("../helpers/userHelper");
 var productHelpers = require("../helpers/productHelper");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;

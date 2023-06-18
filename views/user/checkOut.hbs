@@ -136,11 +136,11 @@
 
             <input type="text" id="couponCode" placeholder="Promo code" style="width: 9.5rem;">
             <span onclick="submitCoupon()" class="btn btn-secondary" id="couponButton">Redeem</span>
+
           </form>
+                 
 
         </div>
-
-
 
         <form id="checkoutForm" class="checkout-form">
           <div class="row">
@@ -191,6 +191,12 @@
           </div>
           <div class="col-lg-3">
             <div class="order-table">
+              <p class="text-success"> available Coupons : 
+              {{#each availableCoupons}}
+                {{this.code}}&nbsp;&nbsp;|
+              {{/each}}
+
+                </p>
               <div class="cart-item">
                 <span>Total Price</span>
                 <p>{{total}}</p>

@@ -296,13 +296,14 @@ module.exports = {
     const userName = req.session.user;
     const user = req.session.user
     const addresses = await userHelper.getAddress(req.session.user._id);
+    const availableCoupons = await userHelper.availableCoupons(user._id)
     await cartHelper
       .getCartTotal(req.session.user._id)
       .then((total) => {
         res.render("user/checkOut", {
           userName,
           addresses,
-          total,user
+          total,user,availableCoupons
         });
       })
       .catch((err) => {

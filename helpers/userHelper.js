@@ -392,4 +392,21 @@ setNewPassword: (userDetails) => {
           })
   })
 },
+availableCoupons: (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const coupons = await db
+        .get()
+        .collection(collection.COUPON_COLLECTION)
+        .find({ status: 'Activated' })
+        .toArray();
+
+      resolve(coupons);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+
 };

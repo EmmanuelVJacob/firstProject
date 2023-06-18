@@ -1,4 +1,7 @@
 <main>
+<!--Plugin CSS file with desired skin -->
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css" />
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
@@ -13,6 +16,28 @@
   <section class="popular-items latest-padding">
     <div class="container">
       <div class="row product-btn justify-content-between mb-40">
+         <div class="col-md-6">
+                            <label for="range">Price range:</label>
+                            <div class="range-slider">
+                                <input type="text" id="range" class="js-range-slider" value="" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="extra-controls mb-4">
+                                <label hidden for="selectMinPrice">Minimum price:</label>
+                                <input hidden type="number" class="form-control" id="selectMinPrice" name="minPrice"
+                                    value="{{minPrice}}" />
+
+                                <label hidden for="selectMaxPrice">Maximum price:</label>
+                                <input hidden type="number" class="form-control" id="selectMaxPrice" name="maxPrice"
+                                    value="{{maxPrice}}" />
+
+                                <div class="mt-5">
+                                    <button class="btn btn-dark" onclick="applyFilter()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
         <div class="properties__button">
           <!--Nav Button  -->
       <nav class="navbar navbar-light ">
@@ -44,6 +69,15 @@
       </div>
       <!-- Nav Card -->
       <div class="tab-content" id="nav-tabContent">
+         <div class="cf-left mt-3">
+                                    {{!-- <select class="sort"> --}}
+                                        {{!-- <option value="" >Sort by</option> --}}
+                                        <a href="" class="btn btn-dark" onclick="sortPrice(1)">Low to High</a>
+                                        <a href="" class="btn btn-dark" onclick="sortPrice(-1)">High to Low</a>
+                                        {{!-- <option value="" onclick="sortPrice(1)">Low to High</option>
+                                        <option value="" onclick="sortPrice(-1)">High to Low</option> --}}
+                                    {{!-- </select> --}}
+                            </div>
         <!-- card one -->
         <div
           class="tab-pane fade show active"
@@ -52,6 +86,7 @@
           aria-labelledby="nav-home-tab"
         >
           <div class="row">
+            {{#if productData}}
             {{#each productData}}
               <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
                 <div class="single-popular-items mb-50 text-center">
@@ -81,7 +116,69 @@
                 </div>
               </div>
             {{/each}}
+            {{/if}}
+            {{#if sortedProduct}}
+            {{#each sortedProduct}}
+              <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                <div class="single-popular-items mb-50 text-center">
+                  <div class="popular-img mb-3">
+                    <div class="w-75 p-3">
+                      <a href="/product/{{this._id}}">
+                        <img src="{{this.images.[0]}}" alt="" />
 
+                      </a>
+
+                    </div>
+
+                    <div class="img-cap">
+                      <a onclick="addToCart('{{this._id}}')">
+                        <span>Add to cart</span>
+                      </a>
+
+                    </div>
+                    <div class="favorit-items">
+                      <span class="flaticon-heart"></span>
+                    </div>
+                  </div>
+                  <div class="popular-caption">
+                    <h3><a href="product_details.html">{{this.name}}</a></h3>
+                    <span>₹ {{this.price}}</span>
+                  </div>
+                </div>
+              </div>
+            {{/each}}
+            {{/if}}
+            {{#if filteredProducts}}
+            {{#each filteredProducts}}
+              <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                <div class="single-popular-items mb-50 text-center">
+                  <div class="popular-img mb-3">
+                    <div class="w-75 p-3">
+                      <a href="/product/{{this._id}}">
+                        <img src="{{this.images.[0]}}" alt="" />
+
+                      </a>
+
+                    </div>
+
+                    <div class="img-cap">
+                      <a onclick="addToCart('{{this._id}}')">
+                        <span>Add to cart</span>
+                      </a>
+
+                    </div>
+                    <div class="favorit-items">
+                      <span class="flaticon-heart"></span>
+                    </div>
+                  </div>
+                  <div class="popular-caption">
+                    <h3><a href="product_details.html">{{this.name}}</a></h3>
+                    <span>₹ {{this.price}}</span>
+                  </div>
+                </div>
+              </div>
+            {{/each}}
+            {{/if}}
           </div>
         </div>
 <!-- Page Add Section End -->
@@ -183,5 +280,70 @@
             });
         });
     </script>
+    
+<!-- Your JavaScript code for initializing and updating the range slider Sort price -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+<script>
+    const range = document.getElementById('range');
+    const selectMinPrice = document.getElementById('selectMinPrice');
+    const selectMaxPrice = document.getElementById('selectMaxPrice');
 
+    // initialize range slider
+    let instance = null;
+    const min = 300;
+    const max = 10000;
+    const defaultMin = min;
+    const defaultMax = max;
+    range.value = `${defaultMin},${defaultMax}`;
+    instance = $(range).ionRangeSlider({
+        skin: "square",
+        type: "double",
+        min: min,
+        max: max,
+        from: defaultMin,
+        to: defaultMax,
+        onStart: updateInputs,
+        onChange: updateInputs
+    }).data("ionRangeSlider");
+
+    function updateInputs(data) {
+        selectMinPrice.value = data.from;
+        selectMaxPrice.value = data.to;
+    }
+
+    function applyFilter() {
+        event.preventDefault();
+
+        console.log(`Selected price range: ${selectMinPrice.value} - ${selectMaxPrice.value}`);
+
+        axios.post('/shopPriceFilter', {
+            minPrice: selectMinPrice.value,
+            maxPrice: selectMaxPrice.value,
+        })
+            .then(() => {
+                location.href = '/shop';
+            })
+            .catch(() => {
+                console.error('Error applying price filter')
+            });
+    }
+</script>
+<script>
+  
+   function sortPrice(value) {
+        axios.post('/shopPriceSort', {
+            minPrice: selectMinPrice.value,
+            maxPrice: selectMaxPrice.value,
+            sort: value
+        })
+            .then(() => {
+                location.href = '/shop';
+            })
+            .catch(() => {
+                location.href = '/shop';
+            });
+    }
+
+</script>
   

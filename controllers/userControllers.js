@@ -221,17 +221,35 @@ module.exports = {
     let productData= await productHelpers.getProducts(currentPage)
     let category = await productHelpers.getProductCategory()
     totalPages = Math.ceil(totalProducts/3)
-    console.log(totalPages,'sdfosidfoiwedfoiwhdfoihoiwdfoiwdfui');
-    console.log(currentPage,'skfhksdfhfkjsdhf');
     let arr = []
     for (let i = 1;i<=totalPages;i++){
       arr.push(i)
     }
-    console.log(arr,'arra');
     if (req.session.user) {
-      res.render('user/shop', {user:req.session.user, userName:req.session.userName,productData,category,totalPages,currentPage,arr});
-    } else {
-      res.render("user/shop",{productData,category,totalPages,currentPage,arr});
+      if(req.session.sortedProduct){
+        let sortedProduct = req.session.sortedProduct
+        res.render("user/shop",{user:req.session.user, userName:req.session.userName,productData:false,sortedProduct,category,totalPages,currentPage,arr});
+        req.session.sortedProduct = false
+      }else if(req.session.filteredProduct){
+        let filteredProducts = req.session.filteredProduct
+        console.log(filteredProducts,'happty');
+        res.render("user/shop",{user:req.session.user, userName:req.session.userName,productData:false,filteredProducts,category,totalPages,currentPage,arr});
+        req.session.filteredProduct = false
+      }else{
+        res.render("user/shop",{user:req.session.user, userName:req.session.userName,productData,category,totalPages,currentPage,arr});
+      }    } else {
+      if(req.session.sortedProduct){
+        let sortedProduct = req.session.sortedProduct
+        res.render("user/shop",{productData:false,sortedProduct,category,totalPages,currentPage,arr});
+        req.session.sortedProduct = false
+      }else if(req.session.filteredProduct){
+        let filteredProducts = req.session.filteredProduct
+        console.log(filteredProducts,'happty');
+        res.render("user/shop",{productData:false,filteredProducts,category,totalPages,currentPage,arr});
+        req.session.filteredProduct = false
+      }else{
+        res.render("user/shop",{productData,category,totalPages,currentPage,arr});
+      }
     }
   },
   deleteCart: (req, res) => {
@@ -264,7 +282,6 @@ module.exports = {
       });
   },
   addAdress:(req,res)=>{
-    console.log('emman');
     try{
       userHelper.addAddress(req.body,req.session.user._id)
       res.redirect('back')
@@ -425,6 +442,7 @@ module.exports = {
   },
   getCategoryWiseProducts: async(req, res) => {
     CategoryID = req.params.name 
+    req.session.category= CategoryID
     const totalProducts = await productHelpers.totalcategoryproducts();
     const currentPage = req.query.page || 1;
     const arr = []
@@ -572,6 +590,34 @@ module.exports = {
       res.redirect('/');
     });
   },
+  sortPrice: async (req, res) => {
+    try {
+      const currentPage = req.query.page || 1;
+      req.session.minPrice = req.body.minPrice;
+      req.session.maxPrice = req.body.maxPrice;
+      const category = req.session.category;
+      req.session.sortedProduct = await productHelpers.sortPrice(req.body,category);
+      res.json({
+        status: "success",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  priceFilter: async (req, res) => {
+    try {
+      req.session.minPrice = req.body.minPrice;
+      req.session.maxPrice = req.body.maxPrice;
+      const category = req.session.category;
+      req.session.filteredProduct = await productHelpers.filterPrice(req.session.minPrice,req.session.maxPrice,category);
+      res.json({
+        status: "success",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
   }
 
 

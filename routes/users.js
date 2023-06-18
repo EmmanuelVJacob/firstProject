@@ -30,6 +30,8 @@ router.get('/cart',userControllers.checkLoggedIn,userControllers.cart)
 router.post('/change-product-quantity', userControllers.checkLoggedIn, userControllers.changeProductQuantity);
 
 router.get('/shop',userControllers.shopPage)
+router.post('/shopPriceFilter',userControllers.priceFilter)
+router.post('/shopPriceSort',userControllers.sortPrice)
 router.get('/deleteCart/:id', userControllers.checkLoggedIn, userControllers.deleteCart);
 router.get('/checkOut',userControllers.checkLoggedIn, userControllers.checkOutPage);
 

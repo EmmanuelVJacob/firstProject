@@ -519,7 +519,59 @@ module.exports = {
     console.log('emmanuyel failed');
     res.render('user/failure', {user: true,user:req.session.user, userName: req.session.userName});
   },
+  forgotPassword: (req, res) => {
+    res.render('user/forgot', {user: true, loginError: req.session.loginError})
+    req.session.loginError = false;
+  },
+  forgotPasswordPost:(req, res) => {
+    let mobile = req.body.phone;
+    userHelper.doLoginWithMobile(mobile).then((response) => {
+      if(response.status){
+        req.session.user = response.user;
+        req.session.userName = req.session.user.name;
+        client.verify.v2.services(serviceSID)
+            .verifications
+            .create({to:`+91${mobile}`, channel: 'sms'})
+            .then(verification => {
+              console.log(verification.status);
+              res.render('user/forgotPasswordVerify', {user:true, mobile});
+            })
+            .catch(error => console.error(error));
+      }else{
+        req.session.loginError = "Mobile Number is not registered"
+        res.redirect('/forgotPassword')
+      }
+    })
+  },
 
+  forgotPasswordVerify: (req, res) =>{
+    let otp = req.body.otp;
+    let mobile = req.body.phone;
+
+    try{
+      client.verify.v2.services(serviceSID)
+        .verificationChecks
+        .create({to: `+91${mobile}`,code: otp})
+        .then(verification_check => {
+          console.log(verification_check.status);
+          if(verification_check.valid){
+             req.session.userLoggedIn = true;
+            res.render('user/setNewPassword', {user:true, mobile});
+          }else{
+            res.render('user/forgotPasswordVerify', {user:true, mobile, status:true});
+          }
+        })
+    }catch(err){
+      console.log(err);
+      res.render('user/forgotPasswordVerify', {user:true, mobile, status:true});
+    }
+  },
+
+    setNewPassword: (req, res) =>{
+      userHelper.setNewPassword(req.body).then(() => {
+      res.redirect('/');
+    });
+  },
   }
 
 

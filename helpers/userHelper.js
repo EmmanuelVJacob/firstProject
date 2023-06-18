@@ -356,5 +356,40 @@ addToUsedCoupon:(coupon,userId)=>{
     ).then(()=>
     resolve())
   })
-}
+},
+doLoginWithMobile: (mobile)=> {
+  return new Promise(async (resolve, reject) => {
+      // mobile = Number(mobile);
+
+      let response= {};
+      const user = await db.get().collection(collection.USER_COLLECTION).findOne({mobile: mobile});
+      console.log(user,'userfound');
+      if(user){
+          response.user = user;
+          response.status = user.status;
+          resolve(response);
+      }else{
+          response.status = false;
+          resolve({status: false})
+      }
+  })
+},
+
+setNewPassword: (userDetails) => {
+  return new Promise( async (resolve, reject)=> {
+    console.log(userDetails,'vannnuuuuu');
+      const mobile = userDetails.phone;
+
+      let userPassword = await bcrypt.hash(userDetails.password, 10);
+      console.log(userPassword,'passsswwwwwoorrd');
+      db.get().collection(collection.USER_COLLECTION).updateOne({mobile: mobile},
+          {
+              $set: {
+                  Password: userPassword
+              }
+          }).then((response) => {
+              resolve(response)
+          })
+  })
+},
 };

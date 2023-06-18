@@ -19,7 +19,10 @@ router.get("/otpVerification", userControllers.otpVerificaionPage);
 router.post("/otpVerification", userControllers.otpVerificaionSignup);
 
 router.post('/',userControllers.userLoginPost)
-
+router.get('/forgotPassword',userControllers.forgotPassword)
+router.post('/forgotPasswordPost',userControllers.forgotPasswordPost)
+router.post('/forgotPasswordVerify',userControllers.forgotPasswordVerify)
+router.post('/setNewPassword',userControllers.setNewPassword)
 
 router.get('/product/:id', userControllers.productPage);
 router.get('/addToCart/:id',userControllers.addToCart)

@@ -9,30 +9,36 @@
             <table class="table-hover table-striped tm-table-striped-even mb-5 text-center" id="productsTable">
                 <thead>
                      <tr class="tm-bg-gray">
-                                <th>Date</th>
+                                <th style="width: 100px;">Date</th>
                                 <th>Address</th>
                                 <th>Mobile</th>
                                 <th>Payment</th>
                                 <th>Status</th>
                                 <th>View</th>
-                                <th>Cancel</th>
+                                <th>status</th>
                         </tr>
                 </thead>
                 <tbody>
                     {{#each orders}}
                             <tr>
-                                <td class="tm-product-name w-50">{{date}}</td>
-                                <td class="text-center pl-2 pr-5">{{shippingAddress.address}}</td>
+                                <td class="tm-product-name pr-2 pl-2" style="   white-space: nowrap; /* Prevent line breaks */
+        overflow: hidden; /* Hide overflowing content */
+        text-overflow: ellipsis;">{{date}}</td>
+                                <td class="text-center pl-3 pr-5">{{shippingAddress.address}}</td>
                                 <td class="text-center pr-5">{{shippingAddress.phone}}</td>
                                 <td class="pl-5 pr-5">{{paymentMethod}}</td>
                                 <td class="pr-5">&nbsp;{{status}}&nbsp;</td>
                                 <td><a class="btn btn-dark" href="/orders/viewProduct/{{_id}}">View Details</a></td>
                                  {{#if isCancelled}}
-                                <td><a class=" btn btn-danger text-light"> Order Cancelled </a></td>
+                                <td><a class=" btn btn-danger disabled text-light w-100"> Order Cancelled 
+                                 {{#if refund}}amount refunded {{else}} refund initiated {{/if}}
+                                     </a></td>
                                  {{else if isDelivered}}
                                 <td><a class=" btn btn-danger text-light w-100" data-toggle="modal" data-target="#return{{_id}}">Return Order</a></td>
                                 {{else if isReturned}}
-                                <td><a href="" class="btn btn-danger disabled w-100">order returned</a></td>
+                                <td><a href="" class="btn btn-danger disabled w-100">order returned 
+                                 {{#if refund}} refunded {{else}} refund initiated {{/if}}
+                                </a></td>
                                 {{else}}
                                 <td><a href="" class="btn btn-danger text-light w-100" data-toggle="modal" data-target="#delete{{this._id}}">cancel order</a></td>
                                 {{/if}}
@@ -43,22 +49,26 @@
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLongTitle">Delete confirmation
+                                                <h5 class="modal-title" id="exampleModalLongTitle">cancel confirmation
                                                 </h5>
                                                 <button type="button" class="close" data-dismiss="modal"
                                                     aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
+                                                <form action="/cancelOrder/{{_id}}" method="post">
+
                                             <div class="modal-body">
-                                                Do you want to cancel order <b class="text-dark"></b>
+                                               Why Do you want to cancel order <b class="text-dark"></b>
+                                               <input type="text" name="reason" placeholder="reason..." required >
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">cancel</button>
-                                                <a href="/cancelOrder/{{_id}}" type="button"
-                                                    class="btn btn-danger">yes</a>
+                                                <button type="submit"
+                                                    class="btn btn-danger">yes</button>
                                             </div>
+                                                    </form>
                                         </div>
                                     </div>
                                 </div>
@@ -76,15 +86,19 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
+                                             <form action="/returnOrder/{{_id}}" method="post">
+
                                             <div class="modal-body">
-                                                Do you want to Return order <b class="text-dark"></b>
+                                               Why Do you want to return order <b class="text-dark"></b>
+                                               <input type="text" name="reason" placeholder="reason..." required >
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">cancel</button>
-                                                <a href="/returnOrder/{{_id}}" type="button"
-                                                    class="btn btn-danger">yes</a>
+                                                <button type="submit"
+                                                    class="btn btn-danger">yes</button>
                                             </div>
+                                                    </form>
                                         </div>
                                     </div>
                                 </div>

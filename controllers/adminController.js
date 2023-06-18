@@ -502,5 +502,11 @@ adminSalesReportFilterPost:(req, res) => {
       res.render('admin/adminSalesReport', {admin: true, deliveredOrders:filteredOrders, totalEarnings});
   })
 },
+refund:async(req,res)=>{
+  orderId = req.params.id
+  let orderDetails = await  productHelpers.getOrderDetails(orderId)
+  adminHelper.refund(orderDetails)
+  res.redirect('/admin/order')
+}
 
 };

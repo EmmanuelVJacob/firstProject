@@ -228,7 +228,7 @@ module.exports = {
       resolve(orders1);
     });
   },
-  deleteOrder: (ordersId) => {
+  deleteOrder: (ordersId,reason) => {
     return new Promise((resolve, reject) => {
       const orderId = new objectId(ordersId);
       db.get()
@@ -240,6 +240,8 @@ module.exports = {
           {
             $set: {
               status: "cancelled",
+              refund: false,
+              reasons:reason
             },
           }
         )
@@ -259,6 +261,7 @@ module.exports = {
           {
             $set: {
               status: "Return",
+              refund: false
             },
           }
         )

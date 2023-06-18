@@ -458,6 +458,18 @@ module.exports = {
       resolve(filteredProducts);
     })
   },
+  getOrderDetails:(orderId)=>{
+    return new Promise((resolve,reject)=>{
+      db.get().collection(collection.ORDER_COLLECTION).findOne(
+        {
+          _id : new ObjectId(orderId)
+        }
+      ).then((response)=>{
+        resolve(response)
+      })
+      
+    })
+  }
 }
 
 

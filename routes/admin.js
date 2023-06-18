@@ -124,5 +124,5 @@ router.get('/adminDeactivate/:id',adminController.checkLoggedIn,adminController.
 router.get('/adminActivate/:id',adminController.checkLoggedIn,adminController.adminActivate)
 router.get('/adminSalesReport',adminController.checkLoggedIn,adminController.adminSalesReport)
 router.post('/adminSalesReportFilter',adminController.checkLoggedIn,adminController.adminSalesReportFilterPost)
-
+router.get('/refund/:id',adminController.refund)
 module.exports = router;

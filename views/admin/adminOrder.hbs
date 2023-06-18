@@ -70,7 +70,18 @@
                                 
 
                                 <td>{{total}}</td>
-                                <td>{{status}}</td>
+                                <td><p>{{status}}  </p>
+                                    {{#if reasons}}
+                                    {{#if refund}}
+                                   <p style="color: green;margin-bottom: 0rem;">amount refunded</p>
+                                    {{else}}
+                                    <a href="/admin/refund/{{_id}}">
+                   <button  id="refund-button" style="background-color: rgb(241, 187, 35);border-color: rgb(241, 187, 35) ;">refund amount</button>
+                                     </a>
+                                    {{/if}}
+                                    <p class="text-danger">reason : {{reasons}}</p>
+                                    {{/if}}
+                                </td>
                                 <td> {{#each products}}<img src="{{product.images.[0]}}" alt="" style="width: 60px; height: 60px;" >{{/each}} 
                                 </td>
                                 <td><a data-toggle="modal" data-target="#edit{{_id}}"><i
@@ -136,5 +147,26 @@
 <script>
   $(function () {
     $('#productsTable').DataTable();
+  });
+</script>
+<script>
+  // Function to handle the refund button click event
+  document.getElementById('refund-button').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent the default link behavior
+
+    // Display Sweet Alert confirmation dialog
+    swal({
+      title: "Confirm Refund",
+      text: "Are you sure you want to refund the amount?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willRefund) => {
+      if (willRefund) {
+        // User clicked "OK", proceed with refund
+        window.location.href = event.target.parentElement.getAttribute('href');
+      }
+    });
   });
 </script>

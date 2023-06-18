@@ -507,4 +507,64 @@ module.exports = {
         resolve(report);
     })
   },
+  refund: (orderDetail) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.ORDER_COLLECTION)
+        .updateOne(
+          {
+            _id: new ObjectId(orderDetail._id),
+          },
+          {
+            $set: {
+              refund: true,
+            },
+          }
+        )
+        .then(async (response) => {
+          const currentDate = new Date().toISOString();
+          const source = orderDetail.reasons
+          const orderId = new ObjectId(orderDetail._id)
+          const amount = parseInt(orderDetail.total)
+          const userWalletExist = await db
+            .get()
+            .collection(collection.WALLET_COLLECTION)
+            .findOne({ userId: new ObjectId(orderDetail.userId) });
+          if (userWalletExist) {
+            db.get()
+              .collection(collection.WALLET_COLLECTION)
+              .updateOne(
+                { userId: new ObjectId(orderDetail.userId) },
+                {
+                  $inc: { bal: amount },
+                  $push: {
+                    data: {
+                      orderId: orderId,
+                      date: currentDate,
+                      reasons: source,
+                      transAmt: amount
+                    }
+                  }
+                }
+              );
+          } else {
+            db.get()
+              .collection(collection.WALLET_COLLECTION)
+              .insertOne({
+                userId: new ObjectId(orderDetail.userId),
+                bal: amount,
+                data: [
+                  {
+                    orderId: orderId,
+                    date: currentDate,
+                    reasons: source,
+                    transAmt: amount
+                  }
+                ]
+              });
+          }
+          resolve(response);
+        });
+    });
+  },
 };

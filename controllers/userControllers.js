@@ -459,12 +459,15 @@ module.exports = {
   },
   deleteOrder:(req,res)=>{
     const orderId = req.params.id
-    userHelper.deleteOrder(orderId).then(()=>{
+    const reason = req.body.reason
+    console.log(reason,'sdfhsdfsdfsdf');
+    userHelper.deleteOrder(orderId,reason).then(()=>{
       res.redirect('back')
     })
   },
   returnOrder:(req,res)=>{
     const orderId = req.params.id
+    
     userHelper.returnProduct(orderId).then(()=>{
       res.redirect('back')
     })

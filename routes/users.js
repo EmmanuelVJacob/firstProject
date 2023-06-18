@@ -51,6 +51,6 @@ router.post('/verifyPayment',userControllers.checkLoggedIn,userControllers.verif
 router.post('/couponApply',userControllers.checkLoggedIn,userControllers.couponApply)
 router.get('/success',userControllers.checkLoggedIn,userControllers.paypalSuccess)
 router.get('/cancel',userControllers.checkLoggedIn,userControllers.failure)
-router.get('/userProfile',userControllers.checkLoggedIn,userControllers.userProfile)
+router.get('/userprofile',userControllers.checkLoggedIn,userControllers.userProfile)
 
 module.exports = router;

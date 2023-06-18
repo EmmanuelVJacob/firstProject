@@ -25,27 +25,18 @@
                                 <ul id="navigation">  
                                     <li><a href="/">Home</a></li>
                                     <li><a href="/shop">shop</a></li>
-                                    <li><a href="about.html">about</a></li>
-                                    <li class="hot"><a href="#">Latest</a>
-                                        <ul class="submenu">
-                                            <li><a href="shop.html"> Product list</a></li>
-                                            <li><a href="product_details.html"> Product Details</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="blog.html">Blog</a>
-                                        <ul class="submenu">
-                                            <li><a href="blog.html">Blog</a></li>
-                                            <li><a href="blog-details.html">Blog Details</a></li>
-                                        </ul>
-                                    </li>
+                                  
+                                 
                                      {{#if userName}}
+                                                                         <li><a href="/orders">my orders</a></li>
+                                    <li><a href="/userprofile">my profile</a></li>
                                     <li><a >{{user.name}}</a>
                                         <ul class="submenu">
                                             
                                            
                                             <li><a href="/logout">logout</a></li>
                                             <li><a href="/orders">my orders</a></li>
-                                            <li><a href="/userProfile">my profile</a></li>
+                                            <li><a href="/userprofile">my profile</a></li>
                       
                                         </ul>
                                     </li>
@@ -72,9 +63,7 @@
                         <div class="header-right">
                             <ul>
                                 <li>
-                                    <div class="nav-search search-switch">
-                                        <span class="flaticon-search"></span>
-                                    </div>
+                                   
                                 </li>
                                 <li> <a href="login.html"><span class="flaticon-user"></span></a></li>
                                 <li><a href="/cart"><span class="flaticon-shopping-cart"></span></a> </li>

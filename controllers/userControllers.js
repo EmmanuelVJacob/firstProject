@@ -467,7 +467,7 @@ module.exports = {
   },
   returnOrder:(req,res)=>{
     const orderId = req.params.id
-    
+
     userHelper.returnProduct(orderId).then(()=>{
       res.redirect('back')
     })
@@ -652,7 +652,16 @@ module.exports = {
       console.log(err);
     }
   },
-
+ userProfile: async (req, res) => {
+    const userName = req.session.userName;
+    // const address = await userHelpers.getAddress(req.session.user._id);
+    const userProfile = await userHelper.getUser(req.session.user._id);
+    // console.log(address+"wooooooooooooooooooooooooooooooow");
+    const userid = req.session.user._id;
+    const wallet = await userHelper.getWallet(userid);
+    const walletBalance = wallet.bal
+    res.render("user/userProfile", {user: req.session.user,userName,userProfile,walletBalance});
+  },
   }
 
 

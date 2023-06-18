@@ -409,7 +409,34 @@ availableCoupons: (userId) => {
       reject(error);
     }
   });
-}
+},
+getUser:(userId)=> {
 
+  return new Promise((resolve, reject) => {
+
+      const user = db.get().collection(collection.USER_COLLECTION).findOne(
+          {
+              _id: new objectId(userId)
+          }
+      )
+      resolve(user);
+  })
+},
+
+getWallet:(userId)=> {
+
+  return new Promise(async (resolve, reject)=> {
+      
+      const wallet = await db.get().collection(collection.WALLET_COLLECTION).findOne({
+          userId: new objectId(userId)
+      });
+
+      if(wallet){
+          resolve(wallet);
+      }else{
+          resolve(null);
+      }
+  })
+},
 
 };

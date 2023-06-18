@@ -337,7 +337,6 @@ module.exports = {
         })
       },
       getCategoryWiseProducts: (CategoryID,currentPage) => {
-        console.log(CategoryID);
         return new Promise(async (resolve, reject) => {
           currentPage = parseInt(currentPage);
           const limit = 3;

@@ -227,28 +227,56 @@ module.exports = {
     }
     if (req.session.user) {
       if(req.session.sortedProduct){
+        let HTL
+        let LTH 
+        let sortValue = req.session.sort
+        if(sortValue == 1){
+           LTH = true
+           HTL = false
+        }else if(sortValue == -1){
+          LTH = false
+          HTL = true
+        }
         let sortedProduct = req.session.sortedProduct
-        res.render("user/shop",{user:req.session.user, userName:req.session.userName,productData:false,sortedProduct,category,totalPages,currentPage,arr});
+        let categoryName = req.session.category
+        res.render("user/shop",{user:req.session.user, userName:req.session.userName,productData:false,sortedProduct,category,totalPages,currentPage,arr,categoryName,LTH,HTL});
         req.session.sortedProduct = false
       }else if(req.session.filteredProduct){
+        let minPrice = req.session.minPrice
+        let maxPrice = req.session.maxPrice
+        let categoryName = req.session.category
         let filteredProducts = req.session.filteredProduct
-        console.log(filteredProducts,'happty');
-        res.render("user/shop",{user:req.session.user, userName:req.session.userName,productData:false,filteredProducts,category,totalPages,currentPage,arr});
+        res.render("user/shop",{user:req.session.user, userName:req.session.userName,productData:false,filteredProducts,category,totalPages,currentPage,arr,categoryName,minPrice,maxPrice});
         req.session.filteredProduct = false
       }else{
         res.render("user/shop",{user:req.session.user, userName:req.session.userName,productData,category,totalPages,currentPage,arr});
-      }    } else {
+      }   
+    
+    } else {
       if(req.session.sortedProduct){
+        let HTL
+        let LTH 
+        let sortValue = req.session.sort
+        if(sortValue == 1){
+           LTH = true
+           HTL = false
+        }else if(sortValue == -1){
+          LTH = false
+          HTL = true
+        }
+        let categoryName = req.session.category
         let sortedProduct = req.session.sortedProduct
-        res.render("user/shop",{productData:false,sortedProduct,category,totalPages,currentPage,arr});
+        res.render("user/shop",{productData:false,sortedProduct,category,totalPages,currentPage,arr,categoryName,LTH,HTL});
         req.session.sortedProduct = false
       }else if(req.session.filteredProduct){
+        let minPrice = req.session.minPrice
+        let maxPrice = req.session.maxPrice
+        let categoryName = req.session.category
         let filteredProducts = req.session.filteredProduct
-        console.log(filteredProducts,'happty');
-        res.render("user/shop",{productData:false,filteredProducts,category,totalPages,currentPage,arr});
+        res.render("user/shop",{productData:false,filteredProducts,category,totalPages,currentPage,arr,categoryName,minPrice,maxPrice});
         req.session.filteredProduct = false
       }else{
-        res.render("user/shop",{productData,category,totalPages,currentPage,arr});
+      res.render("user/shop",{productData,category,totalPages,currentPage,arr});
       }
     }
   },
@@ -453,9 +481,11 @@ module.exports = {
     let productData= await productHelpers.getCategoryWiseProducts(CategoryID,currentPage)
     let category = await productHelpers.getProductCategory()
     if (req.session.user) {
-      res.render('user/shop', {user:req.session.user, userName:req.session.userName,productData,category,arr,currentPage});
+      let categoryName = req.session.category
+      res.render('user/shop', {user:req.session.user, userName:req.session.userName,productData,category,arr,currentPage,categoryName});
     } else {
-      res.render("user/shop",{productData,category,arr,currentPage});
+      let categoryName = req.session.category
+      res.render("user/shop",{productData,category,arr,currentPage,categoryName});
     }
   },
   verifyPayment:(req,res)=>{
@@ -596,6 +626,7 @@ module.exports = {
       req.session.minPrice = req.body.minPrice;
       req.session.maxPrice = req.body.maxPrice;
       const category = req.session.category;
+      req.session.sort = req.body.sort
       req.session.sortedProduct = await productHelpers.sortPrice(req.body,category);
       res.json({
         status: "success",

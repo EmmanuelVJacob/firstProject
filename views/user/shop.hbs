@@ -21,6 +21,10 @@
                             <div class="range-slider">
                                 <input type="text" id="range" class="js-range-slider" value="" />
                             </div>
+                           {{#if minPrice}}
+                           <p>price Range : {{minPrice}} - {{maxPrice}}</p>
+                           {{/if}}
+   
                         </div>
 
                         <div class="col-md-6">
@@ -37,7 +41,9 @@
                                     <button class="btn btn-dark" onclick="applyFilter()">Apply</button>
                                 </div>
                             </div>
+
                         </div>
+                        
         <div class="properties__button">
           <!--Nav Button  -->
       <nav class="navbar navbar-light ">
@@ -54,11 +60,16 @@
         </div>
         {{/if}}
         {{/each}}
+        
     </nav>
-   
+
    
 </nav>
-
+               <div class="col-md-6">
+                {{#if categoryName}}
+                <p style="color: brown;margin-left:1.5rem;">category : {{categoryName}}</p>
+                {{/if}}
+              </div>
           <!--End Nav Button  -->
         </div>
         <!-- Grid and List view -->
@@ -72,8 +83,18 @@
          <div class="cf-left mt-3">
                                     {{!-- <select class="sort"> --}}
                                         {{!-- <option value="" >Sort by</option> --}}
+                                        {{#if LTH}}
+                                        <a href="" class="btn btn-success" onclick="sortPrice(1)">Low to High</a>
+
+                                        {{else}}
                                         <a href="" class="btn btn-dark" onclick="sortPrice(1)">Low to High</a>
+                                        {{/if}}
+                                        {{#if HTL}} 
+                                        <a href="" class="btn btn-success" onclick="sortPrice(-1)">High to Low</a>
+
+                                        {{else}}
                                         <a href="" class="btn btn-dark" onclick="sortPrice(-1)">High to Low</a>
+                                       {{/if}}
                                         {{!-- <option value="" onclick="sortPrice(1)">Low to High</option>
                                         <option value="" onclick="sortPrice(-1)">High to Low</option> --}}
                                     {{!-- </select> --}}

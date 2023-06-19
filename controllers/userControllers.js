@@ -467,8 +467,8 @@ module.exports = {
   },
   returnOrder:(req,res)=>{
     const orderId = req.params.id
-
-    userHelper.returnProduct(orderId).then(()=>{
+    const reasons = req.body.reason
+    userHelper.returnProduct(orderId,reasons).then(()=>{
       res.redirect('back')
     })
   },

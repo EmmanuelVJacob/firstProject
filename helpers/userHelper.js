@@ -250,7 +250,7 @@ module.exports = {
         });
     });
   },
-  returnProduct: (orderId) => {
+  returnProduct: (orderId,reasons) => {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
@@ -261,7 +261,8 @@ module.exports = {
           {
             $set: {
               status: "Return",
-              refund: false
+              refund: false,
+              reasons:reasons
             },
           }
         )

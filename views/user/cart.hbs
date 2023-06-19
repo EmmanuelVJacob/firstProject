@@ -76,7 +76,6 @@
                   </tr>
          
     {{/each}}
-             {{/if}}
                   
                   <tr>
                     <td></td>
@@ -93,12 +92,19 @@
                 
               </table>
               <div class="checkout_btn_inner float-right">
-                <a class="btn_1" href="#">Continue Shopping</a>
+                <a class="btn_1" href="/shop">Continue Shopping</a>
                 <a class="btn_1 checkout_btn_1" href="/checkOut">Proceed to checkout</a>
               </div>
             </div>
           </div>
       </section>
+      {{else}}
+      <h3> your cart is empty!!!</h3>
+          <div class="checkout_btn_inner float-right">
+                <a class="btn_1" href="/shop">Continue Shopping</a>
+              </div>
+                           {{/if}}
+
       <!--================End Cart Area =================-->
 
       <script>

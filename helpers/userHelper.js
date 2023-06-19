@@ -435,7 +435,7 @@ getWallet:(userId)=> {
       if(wallet){
           resolve(wallet);
       }else{
-          resolve(null);
+          resolve(0);
       }
   })
 },

@@ -1,3 +1,5 @@
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18"></script>
+
     <div class="container">
         <div class="row tm-content-row tm-mt-big">
             <div class="col-xl-12 col-lg-12 tm-md-12 tm-sm-12 tm-block-col">
@@ -6,9 +8,9 @@
                         <div class="col-md-8 col-sm-12">
                             <h2 class="tm-block-title d-inline-block">Sales Report</h2>
 
-                        </div>
+                       </div>
 
-                        <form action="/admin/adminSalesReportFilter" method="post">
+                        <form action="/admin/adminSalesReportFilter" onsubmit="return validateForm()">
                         <div class="col-md-4 col-sm-12 text-right mb-2 mt-5">
                             <h5>Filter Products</h5>
                         </div>
@@ -16,11 +18,11 @@
                          <div class="d-flex">
                             <div>
                                 <label>FROM : </label>
-                                <input type="date" value="newDate.[0]" name="date" id="date">
+                                <input type="date" value="{{dateFrom}}" name="date" id="dateFrom">
                                 <label class="ml-4">TO : </label>
-                                <input type="date" value="newDate.[1]" name="date" id="date">
+                                <input type="date" value="{{dateTo}}" name="date" id="dateTo">
                                 <span class="pl-4 m-0">
-                                    <input type="submit" value="submit" class="btn-sm btn text-light" style="background-color: rgb(0, 0, 0);">
+                                    <input type="submit" onclick="validateDates()" value="submit" class="btn-sm btn text-light" style="background-color: rgb(0, 0, 0);">
                                 </span>
                             </div>
                           </div>
@@ -72,3 +74,32 @@
   });
 </script>
 
+ <script>
+    function validateForm() {
+      var fromDate = new Date(document.getElementById("dateFrom").value);
+      var toDate = new Date(document.getElementById("dateTo").value);
+      var currentDate = new Date();
+
+      if (fromDate > currentDate || toDate > currentDate) {
+        // Display SweetAlert error message
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Dates',
+          text: 'Please enter dates on or before today.'
+        });
+        return false;
+      }
+
+      if (fromDate > toDate) {
+        // Display SweetAlert error message
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Dates',
+          text: 'The "FROM" date cannot be after the "TO" date.'
+        });
+        return false;
+      }
+
+      return true;
+    }
+  </script>     

@@ -456,6 +456,7 @@ adminActivate:(req, res)=> {
     const placedCounts = await adminHelper.getAllPlacedOrdersCount();
     const cancelledCounts = await adminHelper.getAllCanceldOrdersCount();
     const returnCounts = await adminHelper.getAllReturnOrdersCount();
+    console.log(returnCounts,'return Count');
     // const topProducts = await adminHelpers.getTopProduct();
     res.render('admin/adminHome', {admin: true, deliveredCounts , placedCounts, cancelledCounts, returnCounts, userCount, totalOrdersPlaced, total, totalEarnings, jan,feb,mar,apr,may,jun});
 },
@@ -480,6 +481,8 @@ adminSalesReport: async (req, res) => {
     res.render('admin/adminSalesReport', {admin: true,  deliveredOrders, totalEarnings})
 },
 adminSalesReportFilterPost:(req, res) => {
+  const dateFrom = req.body.date[0]
+  const dateTo = req.body.date[1]
   adminHelper.filterDate(req.body.date).then((filteredOrders) => {
 
       let totalEarnings = 0;
@@ -499,7 +502,7 @@ adminSalesReportFilterPost:(req, res) => {
       }else{
           filteredOrders = false;
       }
-      res.render('admin/adminSalesReport', {admin: true, deliveredOrders:filteredOrders, totalEarnings});
+      res.render('admin/adminSalesReport', {admin: true, deliveredOrders:filteredOrders, totalEarnings,dateFrom,dateTo});
   })
 },
 refund:async(req,res)=>{

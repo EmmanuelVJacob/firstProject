@@ -388,8 +388,8 @@ module.exports = {
                   payment_method: "paypal",
                 },
                 redirect_urls: {
-                  return_url: "https://www.timezonewatches.shop/success",
-                  cancel_url: "https://www.timezonewatches.shop/cancel",
+                  return_url: "http://www.timezonewatches.shop/success",
+                  cancel_url: "http://www.timezonewatches.shop/cancel",
                 },
                 transactions: [
                   {

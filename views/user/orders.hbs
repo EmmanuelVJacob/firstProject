@@ -37,7 +37,7 @@
                                 <td><a class=" btn btn-danger text-light w-100" data-toggle="modal" data-target="#return{{_id}}">Return Order</a></td>
                                 {{else if isReturned}}
                                 <td><a href="" class="btn btn-danger disabled w-100">order returned 
-                                 {{#if refund}} refunded {{else}} refund initiated {{/if}}
+                                 {{#if refund}}amount refunded {{else}} refund initiated {{/if}}
                                 </a></td>
                                 {{else}}
                                 <td><a href="" class="btn btn-danger text-light w-100" data-toggle="modal" data-target="#delete{{this._id}}">cancel order</a></td>
